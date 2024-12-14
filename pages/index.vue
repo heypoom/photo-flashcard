@@ -13,7 +13,7 @@
 </script>
 
 <template>
-  <div class="bg-slate-950">
+  <div class="bg-slate-950 min-h-screen">
     <section class="container mx-auto px-4 py-6">
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         <div v-for="word in words" class="flex flex-col bg-slate-900 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-4 justify-between">
