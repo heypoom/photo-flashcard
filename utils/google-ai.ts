@@ -51,7 +51,7 @@ export async function predictWordAndMeaning(photoBuffer: Buffer) {
     },
   ])
 
-  let prediction: {word: string; meaning: string} | null
+  let prediction: {word: string; meaning: string; pronunciation: string} | null
 
   try {
     prediction = JSON.parse(result.response.text())

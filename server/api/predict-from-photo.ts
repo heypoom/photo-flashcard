@@ -40,6 +40,8 @@ export default defineEventHandler(async (event) => {
     {
       Word: prediction.word,
       Meaning: prediction.meaning,
+      Pronunciation: prediction.pronunciation,
+
       Photos: attachmentResponse[0],
     },
   ])

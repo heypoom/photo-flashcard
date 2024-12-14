@@ -48,8 +48,8 @@
 </script>
 
 <template>
-  <div>
-    <input type="file" v-on:change="uploadAndPredict" />
+  <div class="flex justify-between w-full">
+    <input type="file" v-on:change="uploadAndPredict" class="text-white" />
     
     <div v-if="uploadingRef">Uploading...</div>
     <div v-if="fileNameRef">Uploaded {{ fileNameRef }}</div>
