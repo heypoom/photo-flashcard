@@ -8,7 +8,7 @@
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
-    "start": "nuxt dev"
+    "start": "node .output/server/index.mjs"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",
