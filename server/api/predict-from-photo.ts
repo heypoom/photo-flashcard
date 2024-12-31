@@ -91,6 +91,9 @@ export default defineEventHandler(async (event) => {
       Meaning: prediction.meaning,
       Pronunciation: prediction.pronunciation,
       Photos: ['L', photoRecordId],
+
+      // TODO: support multiple languages
+      Language: 'cn',
     },
   ])
 
