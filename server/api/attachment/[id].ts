@@ -8,5 +8,11 @@ export default defineEventHandler(async (event) => {
     {headers: {Authorization: `Bearer ${process.env.GRIST_API_KEY}`}}
   )
 
+  setHeader(
+    event,
+    'Cache-Control',
+    'public, s-maxage=31536000, max-age=31536000'
+  )
+
   sendWebResponse(event, response)
 })
