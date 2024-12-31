@@ -57,7 +57,7 @@
       <input id="file-upload" type="file" v-on:change="uploadAndPredict" class="hidden" :disabled="uploadingRef" />
 
       <label for="file-upload">
-        <div class="bg-red-500 text-white p-3 rounded-full shadow-xl" :class="{ 'opacity-30 animate-spin': uploadingRef }">
+        <div class="bg-red-500 text-white p-3 rounded-full shadow-xl cursor-pointer" :class="{ 'opacity-30 animate-spin': uploadingRef }">
           <Icon :icon="uploadingRef ? 'solar:clock-circle-outline' : 'solar:camera-bold'" class="text-3xl" />
         </div>
       </label>
