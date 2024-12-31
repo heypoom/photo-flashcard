@@ -8,11 +8,15 @@ export default defineEventHandler(async (event) => {
     {headers: {Authorization: `Bearer ${process.env.GRIST_API_KEY}`}}
   )
 
-  setHeader(
-    event,
-    'Cache-Control',
-    'public, s-maxage=31536000, max-age=31536000'
-  )
+  // override cache-control header for CDN caching
+  const headers = new Headers(response.headers)
+  headers.delete('cache-control')
+  headers.set('Cache-Control', 'public, s-maxage=31536000, max-age=31536000')
 
-  sendWebResponse(event, response)
+  const data = await response.arrayBuffer()
+
+  return new Response(data, {
+    headers,
+    status: response.status,
+  })
 })
