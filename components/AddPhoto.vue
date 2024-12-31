@@ -11,8 +11,11 @@
 
   const compress = (file: File) => new Promise<File | Blob>(resolve => {
     new Compressor(file, {
-      quality: 0.6,
-      success: resolve
+      quality: 0.7,
+      maxWidth: 500,
+      maxHeight: 500,
+      success: resolve,
+      resize: "cover"
     })
   })
 
