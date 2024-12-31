@@ -9,9 +9,12 @@ export default defineEventHandler(async (event) => {
   )
 
   // override cache-control header for CDN caching
-  const headers = new Headers(response.headers)
-  headers.delete('cache-control')
-  headers.set('Cache-Control', 'public, s-maxage=31536000, max-age=31536000')
+  const headers = new Headers()
+  headers.set('cache-control', 'public, s-maxage=31536000, max-age=31536000')
+  headers.set(
+    'content-type',
+    response.headers.get('content-type') || 'image/jpeg'
+  )
 
   const data = await response.arrayBuffer()
 
