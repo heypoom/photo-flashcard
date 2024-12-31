@@ -34,10 +34,6 @@
       </div>
     </section>
 
-    <section>
-      <div class="px-4 py-2 fixed bottom-0 flex bg-slate-950 w-full">
-        <AddPhoto v-on:success="refresh" />
-      </div>
-    </section>
+    <AddPhoto v-on:success="refresh" />
   </div>
 </template>

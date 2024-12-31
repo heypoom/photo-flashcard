@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   import { ref } from 'vue'
   import Compressor from "compressorjs"
+  import {Icon} from '@iconify/vue'
 
   const props = defineProps<{
     onSuccess?: () => void
@@ -51,10 +52,15 @@
 </script>
 
 <template>
-  <div class="flex justify-between w-full">
-    <input type="file" v-on:change="uploadAndPredict" class="text-white" />
-    
-    <div v-if="uploadingRef">Uploading...</div>
-    <div v-if="fileNameRef">Uploaded {{ fileNameRef }}</div>
+  <div class="flex justify-center w-full fixed bottom-5">
+    <div class="flex">
+      <input id="file-upload" type="file" v-on:change="uploadAndPredict" class="hidden" />
+
+      <label for="file-upload">
+        <div class="bg-red-500 text-white p-3 rounded-full shadow-xl">
+          <Icon icon="solar:camera-bold" class="text-3xl" />
+        </div>
+      </label>
+    </div>
   </div>
 </template>
