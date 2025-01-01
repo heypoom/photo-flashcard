@@ -49,5 +49,11 @@ export function speak({
     utter.rate = rate
   }
 
-  synth.speak(utter)
+  try {
+    synth.speak(utter)
+  } catch (error) {
+    if (error instanceof Error) {
+      alert(`Error speaking: ${error.message}`)
+    }
+  }
 }
