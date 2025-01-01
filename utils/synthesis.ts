@@ -1,4 +1,9 @@
-const PREFERRED_VOICES = ['Li-mu', 'Tingting']
+const PREFERRED_VOICES = [
+  'Li-mu',
+  'com.apple.voice.compact.zh-CN.Tingting',
+  'Tingting',
+  'com.apple.eloquence.zh-CN.Flo',
+]
 
 let voice: SpeechSynthesisVoice | null = null
 
