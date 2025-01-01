@@ -1,8 +1,8 @@
 import sharp from 'sharp'
 
 import {GRIST_API_PREFIX} from '~/constants/grist'
-import {predictWordAndMeaning} from '~/utils/google-ai'
 import {getGristApi} from '~/utils/grist'
+import {predictWordAndMeaning} from '~/utils/predict-word'
 
 export default defineEventHandler(async (event) => {
   console.log('--- predicting')
