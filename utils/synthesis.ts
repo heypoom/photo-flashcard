@@ -1,8 +1,11 @@
 const PREFERRED_VOICES = [
   'Li-mu',
+  'com.apple.eloquence.zh-CN.Flo',
+  'Flo',
+  'com.apple.eloquence.zh-CN.Shelley',
+  'Shelley',
   'com.apple.voice.compact.zh-CN.Tingting',
   'Tingting',
-  'com.apple.eloquence.zh-CN.Flo',
 ]
 
 let voice: SpeechSynthesisVoice | null = null
