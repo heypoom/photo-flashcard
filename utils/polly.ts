@@ -91,45 +91,62 @@ export async function speakWithPolly(message: string) {
       return
     }
 
-    const webStream = AudioStream.transformToWebStream()
-    const mediaSource = new MediaSource()
-    const audio = new Audio(URL.createObjectURL(mediaSource))
+    const hasMSE =
+      'MediaSource' in window && MediaSource.isTypeSupported('audio/mpeg')
 
-    mediaSource.addEventListener('sourceopen', async () => {
-      const sourceBuffer = mediaSource.addSourceBuffer('audio/mpeg')
-      const reader = webStream.getReader()
+    if (hasMSE) {
+      const mediaSource = new MediaSource()
+      const stream = AudioStream.transformToWebStream()
+      const audio = new Audio(URL.createObjectURL(mediaSource))
 
-      try {
-        while (true) {
-          const {done, value} = await reader.read()
-          if (done) break
+      mediaSource.addEventListener('sourceopen', async () => {
+        const sourceBuffer = mediaSource.addSourceBuffer('audio/mpeg')
+        const reader = stream.getReader()
 
-          // Wait for any pending updates to complete
+        try {
+          while (true) {
+            const {done, value} = await reader.read()
+            if (done) break
+
+            // Wait for any pending updates to complete
+            if (sourceBuffer.updating) {
+              await new Promise((resolve) => {
+                sourceBuffer.addEventListener('updateend', resolve, {
+                  once: true,
+                })
+              })
+            }
+            sourceBuffer.appendBuffer(value)
+          }
+
+          // Wait for final update to complete before ending stream
           if (sourceBuffer.updating) {
             await new Promise((resolve) => {
               sourceBuffer.addEventListener('updateend', resolve, {once: true})
             })
           }
-          sourceBuffer.appendBuffer(value)
+          mediaSource.endOfStream()
+        } catch (err) {
+          console.error('error streaming audio:', err)
+          mediaSource.endOfStream('decode')
         }
+      })
 
-        // Wait for final update to complete before ending stream
-        if (sourceBuffer.updating) {
-          await new Promise((resolve) => {
-            sourceBuffer.addEventListener('updateend', resolve, {once: true})
-          })
-        }
-        mediaSource.endOfStream()
-      } catch (err) {
-        console.error('error streaming audio:', err)
-        mediaSource.endOfStream('decode')
+      audio.oncanplaythrough = () => audio.play()
+      audio.onended = () => {
+        URL.revokeObjectURL(audio.src)
+        audio.src = ''
       }
-    })
+    } else {
+      const blob = new Blob([await AudioStream.transformToByteArray()], {
+        type: 'audio/mpeg',
+      })
 
-    audio.oncanplaythrough = () => audio.play()
-    audio.onended = () => {
-      URL.revokeObjectURL(audio.src)
-      audio.src = ''
+      const url = URL.createObjectURL(blob)
+      const audio = new Audio(url)
+
+      audio.onended = () => URL.revokeObjectURL(url)
+      audio.play()
     }
   } catch (error) {
     console.error('Error synthesizing speech:', error)
