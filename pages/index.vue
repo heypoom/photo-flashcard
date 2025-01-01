@@ -42,7 +42,9 @@
 
     <section class="flex justify-center w-full fixed bottom-5 gap-x-3 items-end">
       <AddPhoto v-on:success="refresh" />
+    </section>
 
+    <section class="flex fixed right-5 top-5">
       <NuxtLink to="/challenge" class="size-[40px] p-2 flex items-center justify-center bg-slate-700 text-white rounded-full shadow-xl cursor-pointer">
         <Icon
           icon="solar:test-tube-outline"
