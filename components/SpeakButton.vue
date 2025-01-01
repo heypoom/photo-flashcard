@@ -23,12 +23,22 @@
       isLoading.value = false
     }
   }
+
+  const className = computed(() => [
+    'flex items-center justify-center cursor-pointer text-white bg-gray-700 hover:bg-gray-800 p-[8px] rounded-full',
+    isLoading.value && 'opacity-50',
+    props.class
+  ])
 </script>
 
 <template>
-  <Icon
-    icon="solar:user-speak-bold"
-    :class="{'opacity-50': isLoading, 'text-[33px] cursor-pointer text-white bg-gray-700 hover:bg-gray-800 p-[6px] rounded-full': true, [props.class ?? '']: true}"
-    @click="speak"
-  />
+  <div
+    :class="className"
+  >
+    <Icon
+      icon="solar:user-speak-outline"
+      class="text-[24px]"
+      @click="speak"
+    />
+  </div>
 </template>

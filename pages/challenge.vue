@@ -25,11 +25,11 @@
 
     <div class="fixed bottom-5">
       <div class="w-full flex justify-center gap-x-2">
-        <SpeakButton v-if="word" :word="word.Word" class="!bg-blue-500 !text-4xl"/>
+        <SpeakButton v-if="word" :word="word.Word" class="!bg-blue-500 size-[45px]"/>
 
         <Icon
-          icon="solar:refresh-circle-outline"
-          class="text-4xl text-white bg-red-500 hover:bg-red-700 p-1 rounded-full cursor-pointer"
+          icon="solar:refresh-bold"
+          class="text-[45px] size-[45px] p-[6px] text-white bg-slate-500 hover:bg-slate-700 rounded-full cursor-pointer"
           @click="nextWord"
           :class="{ 'animate-spin opacity-50 cursor-progress': isPending }"
         />

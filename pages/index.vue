@@ -26,7 +26,7 @@
               class="pb-4 aspect-square object-cover w-full"
             />
 
-            <div class="absolute right-4 bottom-1">
+            <div class="absolute right-4 bottom-[-2px]">
               <SpeakButton :word="word.Word"/>
             </div>
           </div>
