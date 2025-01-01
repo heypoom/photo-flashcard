@@ -1,22 +1,44 @@
-const DEFAULT_VOICE_URL = 'Li-Mu'
+const PREFERRED_VOICES = ['Li-mu', 'Tingting']
+
+let voice: SpeechSynthesisVoice | null = null
+
+export function getPreferredVoice(
+  language = 'zh-CN'
+): SpeechSynthesisVoice | null {
+  const synth = window.speechSynthesis
+  const voices = synth.getVoices()
+
+  for (const voice of voices) {
+    if (PREFERRED_VOICES.includes(voice.voiceURI)) {
+      return voice
+    }
+  }
+
+  const voice = voices.find((voice) => voice.lang.includes(language))
+
+  return voice ?? null
+}
 
 export function speak({
   message,
-  voiceURI = DEFAULT_VOICE_URL,
   pitch,
   rate,
 }: {
   message: string
-  voiceURI?: string
   pitch?: number
   rate?: number
 }) {
   const synth = window.speechSynthesis
-  const voices = synth.getVoices()
+
+  if (!voice) {
+    voice = getPreferredVoice()
+  }
+
+  if (!voice) {
+    return
+  }
 
   const utter = new SpeechSynthesisUtterance(message)
-
-  const voice = voices.find((voice) => voice.voiceURI === voiceURI)!
   utter.voice = voice
 
   if (pitch !== undefined) {
