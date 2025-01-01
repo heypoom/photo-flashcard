@@ -101,6 +101,16 @@ const uploadIconClass = computed(() => {
   <div
     class="bg-slate-950 min-h-screen flex flex-col justify-center px-8 items-center"
   >
+    <div
+      v-if="isLoadingWord && !word"
+      class="w-full flex items-center justify-center pb-5 min-h-screen fixed left-0 top-0 pointer-events-none"
+    >
+      <Icon
+        icon="solar:refresh-broken"
+        class="animate-spin text-6xl text-gray-400"
+      />
+    </div>
+
     <section v-if="word">
       <div class="p-4">
         <div class="text-white text-4xl font-bold mb-2">{{ word.Word }}</div>
