@@ -7,10 +7,10 @@
 
   const {data: word, refresh, status} = useFetch<WordEntry>('/api/challenge/word')
 
-  const isPending = computed(() => status.value === 'pending')
+  const isLoadingWord = computed(() => status.value === 'pending')
 
   function nextWord() {
-    if (isPending.value) return
+    if (isLoadingWord.value) return
 
     refresh()
   }
@@ -78,6 +78,10 @@
   })
 
   const uploadIconClass = computed(() => {
+    if (isLoadingWord.value) {
+      return 'bg-slate-800 opacity-50 cursor-progress'
+    }
+
     return {
       'opacity-30 animate-spin cursor-progress': uploadingRef.value,
       'bg-pink-500': isCorrectRef.value === null,
@@ -120,7 +124,7 @@
           icon="solar:refresh-bold"
           class="text-[45px] size-[45px] p-[6px] text-white bg-slate-500 hover:bg-slate-700 rounded-full cursor-pointer"
           @click="nextWord"
-          :class="{ 'animate-spin opacity-50 cursor-progress': isPending }"
+          :class="{ 'animate-spin opacity-50 cursor-progress': isLoadingWord }"
         />
       </div>
     </div>
