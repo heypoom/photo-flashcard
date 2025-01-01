@@ -5,27 +5,17 @@ export default defineEventHandler(async () => {
   console.log('--- /api/challenge/word starts')
 
   const query = 'select * from Words order by RANDOM() limit 1'
-  const records = await gristSql<{Photos: string}>(query)
+  const [record] = await gristSql<{Photos: string}>(query)
 
   console.log(`--- randomized row took ${Date.now() - start}ms`)
 
-  const final = await Promise.all(
-    records.map(async (record) => {
-      const attachmentIds = await getAttachmentIdsForWord(
-        JSON.parse(record.Photos)
-      )
+  const attachmentIds = await getAttachmentIdsForWord(JSON.parse(record.Photos))
 
-      return {
-        ...record,
-        attachmentIds,
-        attachmentId: attachmentIds?.[0],
-      }
-    })
-  )
-
-  console.log(`--- /api/challenge/word took ${Date.now() - start}ms`)
-
-  return final
+  return {
+    ...record,
+    attachmentIds,
+    attachmentId: attachmentIds?.[0],
+  }
 })
 
 async function getAttachmentIdsForWord(
