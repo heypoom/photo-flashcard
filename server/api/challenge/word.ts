@@ -15,7 +15,11 @@ export default defineEventHandler(async () => {
         JSON.parse(record.Photos)
       )
 
-      return {...record, attachmentIds}
+      return {
+        ...record,
+        attachmentIds,
+        attachmentId: attachmentIds?.[0],
+      }
     })
   )
 
