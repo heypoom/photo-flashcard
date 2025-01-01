@@ -2,6 +2,8 @@
   import AddPhoto from "../components/AddPhoto.vue"
   import SpeakButton from "../components/SpeakButton.vue"
 
+  import {prepareGuestCredentials} from "../utils/polly"
+
   interface WordEntry {
     id: string
     attachmentId: string
@@ -11,6 +13,10 @@
   }
 
   const {data: words, refresh} = useFetch<WordEntry[]>('/api/words')
+
+  onMounted(() => {
+    prepareGuestCredentials()
+  })
 </script>
 
 <template>

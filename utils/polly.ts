@@ -45,14 +45,22 @@ async function getGuestCredentials() {
   }
 }
 
-export async function speakWithPolly(message: string) {
+export async function prepareGuestCredentials() {
   if (
     !credentials ||
     (credentials.expiration && credentials.expiration < new Date())
   ) {
     credentials = await getGuestCredentials()
-    console.log('Guest credentials obtained:', credentials)
+
+    console.log(
+      '--- aws cognito credentials obtained:',
+      credentials?.accessKeyId
+    )
   }
+}
+
+export async function speakWithPolly(message: string) {
+  await prepareGuestCredentials()
 
   if (!credentials) {
     return
