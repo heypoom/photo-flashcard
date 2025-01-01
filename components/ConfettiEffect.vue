@@ -17,7 +17,7 @@ const options: ParticleOptions = {
   },
   particles: {
     color: {
-      value: ["#1E00FF", "#FF0061", "#E1FF00", "#00FF9E"],
+      value: ["#8AA7FF", "#FF9ECD", "#FFEB85", "#85FFB6"],
     },
     move: {
       decay: 0.05,

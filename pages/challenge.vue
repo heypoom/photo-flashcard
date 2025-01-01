@@ -154,5 +154,5 @@ const uploadIconClass = computed(() => {
     </div>
   </div>
 
-  <ConfettiEffect />
+  <ConfettiEffect v-if="isCorrectRef === true" />
 </template>
