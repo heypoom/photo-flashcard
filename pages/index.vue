@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import AddPhoto from "../components/AddPhoto.vue"
   import SpeakButton from "../components/SpeakButton.vue"
+  import ListVoices from "../components/ListVoices.vue"
 
   interface WordEntry {
     id: string
@@ -36,6 +37,12 @@
             <div class="text-white text-sm">{{ word.Pronunciation }}</div>
           </div>
         </div>
+      </div>
+
+      <div class="pt-5 font-mono">
+        <ClientOnly>
+          <ListVoices />
+        </ClientOnly>
       </div>
     </section>
 
