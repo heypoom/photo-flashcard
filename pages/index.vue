@@ -1,4 +1,6 @@
 <script setup lang="ts">
+  import {Icon} from "@iconify/vue"
+  
   import AddPhoto from "../components/AddPhoto.vue"
   import SpeakButton from "../components/SpeakButton.vue"
 
@@ -38,6 +40,15 @@
       </div>
     </section>
 
-    <AddPhoto v-on:success="refresh" />
+    <section class="flex justify-center w-full fixed bottom-5 gap-x-3 items-end">
+      <AddPhoto v-on:success="refresh" />
+
+      <NuxtLink to="/challenge" class="size-[40px] p-2 flex items-center justify-center bg-slate-700 text-white rounded-full shadow-xl cursor-pointer">
+        <Icon
+          icon="solar:test-tube-outline"
+          class="text-[30px]"
+        />
+      </NuxtLink>
+    </section>
   </div>
 </template>
