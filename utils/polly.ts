@@ -138,15 +138,21 @@ export async function speakWithPolly(message: string) {
         audio.src = ''
       }
     } else {
-      const blob = new Blob([await AudioStream.transformToByteArray()], {
-        type: 'audio/mpeg',
-      })
+      const now = Date.now()
+      const byteArray = await AudioStream.transformToByteArray()
+      console.log(`--- convert audio to byte array in: ${Date.now() - now}ms`)
+
+      const blob = new Blob([byteArray], {type: 'audio/mpeg'})
 
       const url = URL.createObjectURL(blob)
       const audio = new Audio(url)
 
-      audio.onended = () => URL.revokeObjectURL(url)
-      audio.play()
+      audio.onended = () => {
+        URL.revokeObjectURL(url)
+        audio.src = ''
+      }
+
+      await audio.play()
     }
   } catch (error) {
     console.error('Error synthesizing speech:', error)
