@@ -1,5 +1,7 @@
 <script lang="ts" setup>
   import {Icon} from "@iconify/vue"
+  import { ref } from 'vue'
+  import Compressor from "compressorjs"
   
   import type {WordEntry} from "../types/word-entry"
 
@@ -12,6 +14,74 @@
 
     refresh()
   }
+
+  const uploadingRef = ref(false)
+  const isCorrectRef = ref<boolean | null>(null)
+
+  const compress = (file: File) => new Promise<File | Blob>(resolve => {
+    new Compressor(file, {
+      quality: 0.2,
+      width: 500,
+      height: 500,
+      success: resolve,
+      resize: "cover"
+    })
+  })
+
+  async function uploadAndVerifyWordChallenge(event: Event) {
+    uploadingRef.value = true
+    const target = event.target as HTMLInputElement
+
+    const file = target.files?.[0]
+
+    if (!file) {
+      return
+    }
+
+    const compressedFile = await compress(file)
+
+    const formData = new FormData()
+    formData.append('photo', compressedFile)
+    formData.append('word', word.value?.Word ?? '')
+
+    console.log('--- verifying')
+
+    const response = await fetch('/api/verify/word', {
+      method: 'POST',
+      body: formData
+    })
+
+    const { isCorrect = false } = await response.json()
+
+    uploadingRef.value = false
+    isCorrectRef.value = isCorrect
+
+    setTimeout(() => {
+      isCorrectRef.value = null
+        
+      if (isCorrect) {
+        nextWord()
+      }
+    }, 3000)
+  }
+
+  const uploadIcon = computed(() => {
+    if (isCorrectRef.value === true) return 'solar:check-read-outline'
+    if (isCorrectRef.value === false) return 'solar:list-cross-minimalistic-linear'
+
+    if (uploadingRef.value) return 'solar:clock-circle-outline'
+    
+    return 'solar:camera-bold'
+  })
+
+  const uploadIconClass = computed(() => {
+    return {
+      'opacity-30 animate-spin cursor-progress': uploadingRef.value,
+      'bg-pink-500': isCorrectRef.value === null,
+      'bg-orange-500': isCorrectRef.value === false,
+      'bg-green-500': isCorrectRef.value === true,
+    }
+  })
 </script>
 
 <template>
@@ -24,7 +94,23 @@
     </section>
 
     <div class="fixed bottom-5">
-      <div class="w-full flex justify-center gap-x-2">
+      <div class="w-full flex justify-center gap-x-3">
+        <div class="flex">
+          <input id="file-upload" type="file" v-on:change="uploadAndVerifyWordChallenge" class="hidden" :disabled="uploadingRef" />
+
+          <label for="file-upload">
+            <div
+              class="text-white p-2 rounded-full shadow-xl cursor-pointer"
+              :class="uploadIconClass"
+            >
+              <Icon
+                :icon="uploadIcon"
+                class="text-3xl"
+              />
+            </div>
+          </label>
+        </div>
+        
         <SpeakButton v-if="word" :word="word.Word" class="!bg-blue-500 size-[45px]"/>
 
         <Icon

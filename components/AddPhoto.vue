@@ -7,7 +7,6 @@
     onSuccess?: () => void
   }>()
 
-  const fileNameRef = ref('')
   const uploadingRef = ref(false)
 
   const compress = (file: File) => new Promise<File | Blob>(resolve => {
@@ -43,8 +42,6 @@
     })
 
     console.log('response:', await response.text())
-
-    fileNameRef.value = file.name
 
     props.onSuccess?.()
     uploadingRef.value = false
