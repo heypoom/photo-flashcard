@@ -1,7 +1,7 @@
 export interface WordEntry {
-  id: string
-  attachmentId: string
-  Word: string
-  Meaning: string
-  Pronunciation: string
+  id: string;
+  attachmentId: string;
+  Word: string;
+  Meaning: string;
+  Pronunciation: string;
 }

@@ -1,33 +1,38 @@
 <script setup lang="ts">
-  import {Icon} from "@iconify/vue"
-  
-  import AddPhoto from "../components/AddPhoto.vue"
-  import SpeakButton from "../components/SpeakButton.vue"
+import { Icon } from "@iconify/vue";
 
-  import {prepareGuestCredentials} from "../utils/polly"
-  import type {WordEntry} from "../types/word-entry"
+import AddPhoto from "../components/AddPhoto.vue";
+import SpeakButton from "../components/SpeakButton.vue";
 
-  const {data: words, refresh} = useFetch<WordEntry[]>('/api/words')
+import { prepareGuestCredentials } from "../utils/polly";
+import type { WordEntry } from "../types/word-entry";
 
-  onMounted(() => {
-    prepareGuestCredentials()
-  })
+const { data: words, refresh } = useFetch<WordEntry[]>("/api/words");
+
+onMounted(() => {
+  prepareGuestCredentials();
+});
 </script>
 
 <template>
   <div class="bg-slate-950 min-h-screen">
     <section class="container mx-auto px-4 py-6">
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        <div v-for="word in words" class="flex flex-col bg-slate-900 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-4 justify-between">
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+      >
+        <div
+          v-for="word in words"
+          class="flex flex-col bg-slate-900 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-4 justify-between"
+        >
           <div class="relative">
-            <img 
+            <img
               v-if="word.attachmentId"
               :src="`/api/attachment/${word.attachmentId}`"
               class="pb-4 aspect-square object-cover w-full"
             />
 
             <div class="absolute right-4 bottom-[-2px]">
-              <SpeakButton :word="word.Word"/>
+              <SpeakButton :word="word.Word" />
             </div>
           </div>
 
@@ -40,16 +45,18 @@
       </div>
     </section>
 
-    <section class="flex justify-center w-full fixed bottom-5 gap-x-3 items-end">
+    <section
+      class="flex justify-center w-full fixed bottom-5 gap-x-3 items-end"
+    >
       <AddPhoto v-on:success="refresh" />
     </section>
 
     <section class="flex fixed right-5 top-5">
-      <NuxtLink to="/challenge" class="size-[40px] p-2 flex items-center justify-center bg-slate-700 text-white rounded-full shadow-xl cursor-pointer">
-        <Icon
-          icon="solar:test-tube-outline"
-          class="text-[30px]"
-        />
+      <NuxtLink
+        to="/challenge"
+        class="size-[40px] p-2 flex items-center justify-center bg-slate-700 text-white rounded-full shadow-xl cursor-pointer"
+      >
+        <Icon icon="solar:test-tube-outline" class="text-[30px]" />
       </NuxtLink>
     </section>
   </div>

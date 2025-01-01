@@ -1,8 +1,8 @@
-import {SchemaType, type GenerationConfig} from '@google/generative-ai'
+import { SchemaType, type GenerationConfig } from "@google/generative-ai";
 
-import {gemini} from './google-ai'
+import { gemini } from "./google-ai";
 
-import {PHOTO_TO_WORD_PROMPT} from '~/constants/prompt'
+import { PHOTO_TO_WORD_PROMPT } from "~/constants/prompt";
 
 export async function predictWordAndMeaning(photoBuffer: Buffer) {
   const generationConfig: GenerationConfig = {
@@ -10,7 +10,7 @@ export async function predictWordAndMeaning(photoBuffer: Buffer) {
     topP: 0.95,
     topK: 40,
     maxOutputTokens: 8192,
-    responseMimeType: 'application/json',
+    responseMimeType: "application/json",
     responseSchema: {
       type: SchemaType.OBJECT,
       properties: {
@@ -24,29 +24,33 @@ export async function predictWordAndMeaning(photoBuffer: Buffer) {
           type: SchemaType.STRING,
         },
       },
-      required: ['word', 'meaning', 'pronunciation'],
+      required: ["word", "meaning", "pronunciation"],
     } as const,
-  }
+  };
 
-  gemini.generationConfig = generationConfig
+  gemini.generationConfig = generationConfig;
 
   const result = await gemini.generateContent([
     PHOTO_TO_WORD_PROMPT,
     {
       inlineData: {
-        data: photoBuffer.toString('base64'),
-        mimeType: 'image/png',
+        data: photoBuffer.toString("base64"),
+        mimeType: "image/png",
       },
     },
-  ])
+  ]);
 
-  let prediction: {word: string; meaning: string; pronunciation: string} | null
+  let prediction: {
+    word: string;
+    meaning: string;
+    pronunciation: string;
+  } | null;
 
   try {
-    prediction = JSON.parse(result.response.text())
+    prediction = JSON.parse(result.response.text());
   } catch (error) {
-    return null
+    return null;
   }
 
-  return prediction
+  return prediction;
 }
