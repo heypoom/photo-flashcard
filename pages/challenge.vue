@@ -1,26 +1,26 @@
 <script lang="ts" setup>
-import { Icon } from "@iconify/vue";
-import { ref } from "vue";
-import Compressor from "compressorjs";
+import { Icon } from "@iconify/vue"
+import { ref } from "vue"
+import Compressor from "compressorjs"
 
-import type { WordEntry } from "../types/word-entry";
+import type { WordEntry } from "../types/word-entry"
 
 const {
   data: word,
   refresh,
   status,
-} = useFetch<WordEntry>("/api/challenge/word");
+} = useFetch<WordEntry>("/api/challenge/word")
 
-const isLoadingWord = computed(() => status.value === "pending");
+const isLoadingWord = computed(() => status.value === "pending")
 
 function nextWord() {
-  if (isLoadingWord.value) return;
+  if (isLoadingWord.value) return
 
-  refresh();
+  refresh()
 }
 
-const uploadingRef = ref(false);
-const isCorrectRef = ref<boolean | null>(null);
+const uploadingRef = ref(false)
+const isCorrectRef = ref<boolean | null>(null)
 
 const compress = (file: File) =>
   new Promise<File | Blob>((resolve) => {
@@ -30,62 +30,62 @@ const compress = (file: File) =>
       height: 500,
       success: resolve,
       resize: "cover",
-    });
-  });
+    })
+  })
 
 async function uploadAndVerifyWordChallenge(event: Event) {
-  uploadingRef.value = true;
-  const target = event.target as HTMLInputElement;
+  uploadingRef.value = true
+  const target = event.target as HTMLInputElement
 
-  const file = target.files?.[0];
+  const file = target.files?.[0]
 
   if (!file) {
-    return;
+    return
   }
 
-  const compressedFile = await compress(file);
+  const compressedFile = await compress(file)
 
-  const entry = word.value;
-  const targetWord = `${entry?.Word ?? ""} (meaning: ${entry?.Meaning})`;
+  const entry = word.value
+  const targetWord = `${entry?.Word ?? ""} (meaning: ${entry?.Meaning})`
 
-  const formData = new FormData();
-  formData.append("photo", compressedFile);
-  formData.append("word", targetWord);
+  const formData = new FormData()
+  formData.append("photo", compressedFile)
+  formData.append("word", targetWord)
 
-  console.log("--- verifying");
+  console.log("--- verifying")
 
   const response = await fetch("/api/verify/word", {
     method: "POST",
     body: formData,
-  });
+  })
 
-  const { isCorrect = false } = await response.json();
+  const { isCorrect = false } = await response.json()
 
-  uploadingRef.value = false;
-  isCorrectRef.value = isCorrect;
+  uploadingRef.value = false
+  isCorrectRef.value = isCorrect
 
   setTimeout(() => {
-    isCorrectRef.value = null;
+    isCorrectRef.value = null
 
     if (isCorrect) {
-      nextWord();
+      nextWord()
     }
-  }, 3000);
+  }, 3000)
 }
 
 const uploadIcon = computed(() => {
-  if (isCorrectRef.value === true) return "solar:check-read-outline";
+  if (isCorrectRef.value === true) return "solar:check-read-outline"
   if (isCorrectRef.value === false)
-    return "solar:list-cross-minimalistic-linear";
+    return "solar:list-cross-minimalistic-linear"
 
-  if (uploadingRef.value) return "solar:clock-circle-outline";
+  if (uploadingRef.value) return "solar:clock-circle-outline"
 
-  return "solar:camera-bold";
-});
+  return "solar:camera-bold"
+})
 
 const uploadIconClass = computed(() => {
   if (isLoadingWord.value) {
-    return "bg-slate-800 opacity-50 cursor-progress";
+    return "bg-slate-800 opacity-50 cursor-progress"
   }
 
   return {
@@ -93,8 +93,8 @@ const uploadIconClass = computed(() => {
     "bg-pink-500": isCorrectRef.value === null,
     "bg-orange-500": isCorrectRef.value === false,
     "bg-green-500": isCorrectRef.value === true,
-  };
-});
+  }
+})
 </script>
 
 <template>

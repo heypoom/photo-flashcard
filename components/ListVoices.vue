@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-const voices = window.speechSynthesis.getVoices();
+const voices = window.speechSynthesis.getVoices()
 
-const cnVoices = voices.filter((voice) => voice.lang.includes("zh-CN"));
+const cnVoices = voices.filter((voice) => voice.lang.includes("zh-CN"))
 </script>
 
 <template>

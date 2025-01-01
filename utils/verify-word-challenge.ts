@@ -1,6 +1,6 @@
-import { SchemaType, type GenerationConfig } from "@google/generative-ai";
+import { SchemaType, type GenerationConfig } from "@google/generative-ai"
 
-import { gemini } from "./google-ai";
+import { gemini } from "./google-ai"
 
 export async function verifyWordChallenge(
   photoBuffer: Buffer,
@@ -21,14 +21,14 @@ export async function verifyWordChallenge(
       },
       required: ["isCorrect"],
     } as const,
-  };
+  }
 
-  gemini.generationConfig = generationConfig;
+  gemini.generationConfig = generationConfig
 
   const verifyPrompt = `
     Does the most prominent object in the photo matches this word: ${word}
     Provide the response in { isCorrect: boolean }
-  `;
+  `
 
   const result = await gemini.generateContent([
     verifyPrompt,
@@ -38,17 +38,17 @@ export async function verifyWordChallenge(
         mimeType: "image/png",
       },
     },
-  ]);
+  ])
 
-  let prediction: { isCorrect?: boolean } | null;
+  let prediction: { isCorrect?: boolean } | null
 
   try {
-    prediction = JSON.parse(result.response.text());
+    prediction = JSON.parse(result.response.text())
   } catch (error) {
-    return false;
+    return false
   }
 
-  console.log(`--- challenge verify prediction:`, prediction);
+  console.log(`--- challenge verify prediction:`, prediction)
 
-  return prediction?.isCorrect ?? false;
+  return prediction?.isCorrect ?? false
 }

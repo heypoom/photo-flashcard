@@ -1,8 +1,8 @@
-import { SchemaType, type GenerationConfig } from "@google/generative-ai";
+import { SchemaType, type GenerationConfig } from "@google/generative-ai"
 
-import { gemini } from "./google-ai";
+import { gemini } from "./google-ai"
 
-import { PHOTO_TO_WORD_PROMPT } from "~/constants/prompt";
+import { PHOTO_TO_WORD_PROMPT } from "~/constants/prompt"
 
 export async function predictWordAndMeaning(photoBuffer: Buffer) {
   const generationConfig: GenerationConfig = {
@@ -26,9 +26,9 @@ export async function predictWordAndMeaning(photoBuffer: Buffer) {
       },
       required: ["word", "meaning", "pronunciation"],
     } as const,
-  };
+  }
 
-  gemini.generationConfig = generationConfig;
+  gemini.generationConfig = generationConfig
 
   const result = await gemini.generateContent([
     PHOTO_TO_WORD_PROMPT,
@@ -38,19 +38,19 @@ export async function predictWordAndMeaning(photoBuffer: Buffer) {
         mimeType: "image/png",
       },
     },
-  ]);
+  ])
 
   let prediction: {
-    word: string;
-    meaning: string;
-    pronunciation: string;
-  } | null;
+    word: string
+    meaning: string
+    pronunciation: string
+  } | null
 
   try {
-    prediction = JSON.parse(result.response.text());
+    prediction = JSON.parse(result.response.text())
   } catch (error) {
-    return null;
+    return null
   }
 
-  return prediction;
+  return prediction
 }

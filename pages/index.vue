@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import { Icon } from "@iconify/vue";
+import { Icon } from "@iconify/vue"
 
-import AddPhoto from "../components/AddPhoto.vue";
-import SpeakButton from "../components/SpeakButton.vue";
+import { prepareGuestCredentials } from "../utils/polly"
+import type { WordEntry } from "../types/word-entry"
 
-import { prepareGuestCredentials } from "../utils/polly";
-import type { WordEntry } from "../types/word-entry";
-
-const { data: words, refresh } = useFetch<WordEntry[]>("/api/words");
+const { data: words, refresh } = useFetch<WordEntry[]>("/api/words")
 
 onMounted(() => {
-  prepareGuestCredentials();
-});
+  prepareGuestCredentials()
+})
 </script>
 
 <template>

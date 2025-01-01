@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import type { ISourceOptions as ParticleOptions } from "@tsparticles/engine";
+import type { ISourceOptions as ParticleOptions } from "@tsparticles/engine"
 
 const options: ParticleOptions = {
   fullScreen: {
@@ -117,7 +117,7 @@ const options: ParticleOptions = {
       },
     },
   ],
-};
+}
 </script>
 
 <template>

@@ -6,25 +6,25 @@ const PREFERRED_VOICES = [
   "Shelley",
   "com.apple.voice.compact.zh-CN.Tingting",
   "Tingting",
-];
+]
 
-let voice: SpeechSynthesisVoice | null = null;
+let voice: SpeechSynthesisVoice | null = null
 
 export function getPreferredVoice(
   language = "zh-CN",
 ): SpeechSynthesisVoice | null {
-  const synth = window.speechSynthesis;
-  const voices = synth.getVoices();
+  const synth = window.speechSynthesis
+  const voices = synth.getVoices()
 
   for (const voice of voices) {
     if (PREFERRED_VOICES.includes(voice.voiceURI)) {
-      return voice;
+      return voice
     }
   }
 
-  const voice = voices.find((voice) => voice.lang.includes(language));
+  const voice = voices.find((voice) => voice.lang.includes(language))
 
-  return voice ?? null;
+  return voice ?? null
 }
 
 export function speak({
@@ -32,36 +32,36 @@ export function speak({
   pitch,
   rate,
 }: {
-  message: string;
-  pitch?: number;
-  rate?: number;
+  message: string
+  pitch?: number
+  rate?: number
 }) {
-  const synth = window.speechSynthesis;
+  const synth = window.speechSynthesis
 
   if (!voice) {
-    voice = getPreferredVoice();
+    voice = getPreferredVoice()
   }
 
   if (!voice) {
-    return;
+    return
   }
 
-  const utter = new SpeechSynthesisUtterance(message);
-  utter.voice = voice;
+  const utter = new SpeechSynthesisUtterance(message)
+  utter.voice = voice
 
   if (pitch !== undefined) {
-    utter.pitch = pitch;
+    utter.pitch = pitch
   }
 
   if (rate !== undefined) {
-    utter.rate = rate;
+    utter.rate = rate
   }
 
   try {
-    synth.speak(utter);
+    synth.speak(utter)
   } catch (error) {
     if (error instanceof Error) {
-      alert(`Error speaking: ${error.message}`);
+      alert(`Error speaking: ${error.message}`)
     }
   }
 }

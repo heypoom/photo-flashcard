@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { ref } from "vue";
-import Compressor from "compressorjs";
-import { Icon } from "@iconify/vue";
+import { ref } from "vue"
+import Compressor from "compressorjs"
+import { Icon } from "@iconify/vue"
 
 const props = defineProps<{
-  onSuccess?: () => void;
-}>();
+  onSuccess?: () => void
+}>()
 
-const uploadingRef = ref(false);
+const uploadingRef = ref(false)
 
 const compress = (file: File) =>
   new Promise<File | Blob>((resolve) => {
@@ -17,35 +17,35 @@ const compress = (file: File) =>
       height: 500,
       success: resolve,
       resize: "cover",
-    });
-  });
+    })
+  })
 
 async function uploadAndPredict(event: Event) {
-  uploadingRef.value = true;
-  const target = event.target as HTMLInputElement;
+  uploadingRef.value = true
+  const target = event.target as HTMLInputElement
 
-  const file = target.files?.[0];
+  const file = target.files?.[0]
 
   if (!file) {
-    return;
+    return
   }
 
-  const compressedFile = await compress(file);
+  const compressedFile = await compress(file)
 
-  const formData = new FormData();
-  formData.append("photo", compressedFile);
+  const formData = new FormData()
+  formData.append("photo", compressedFile)
 
-  console.log("--- predicting");
+  console.log("--- predicting")
 
   const response = await fetch("/api/predict-from-photo", {
     method: "POST",
     body: formData,
-  });
+  })
 
-  console.log("response:", await response.text());
+  console.log("response:", await response.text())
 
-  props.onSuccess?.();
-  uploadingRef.value = false;
+  props.onSuccess?.()
+  uploadingRef.value = false
 }
 </script>
 
