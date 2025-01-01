@@ -146,7 +146,7 @@ const uploadIconClass = computed(() => {
         />
 
         <Icon
-          icon="solar:refresh-bold"
+          icon="solar:refresh-broken"
           class="text-[45px] size-[45px] p-[6px] text-white bg-slate-500 hover:bg-slate-700 rounded-full cursor-pointer"
           @click="nextWord"
           :class="{ 'animate-spin opacity-50 cursor-progress': isLoadingWord }"
