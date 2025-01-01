@@ -91,18 +91,46 @@ export async function speakWithPolly(message: string) {
       return
     }
 
-    // Convert AudioStream to blob
-    const blob = new Blob([await AudioStream.transformToByteArray()], {
-      type: 'audio/mpeg',
+    const webStream = AudioStream.transformToWebStream()
+    const mediaSource = new MediaSource()
+    const audio = new Audio(URL.createObjectURL(mediaSource))
+
+    mediaSource.addEventListener('sourceopen', async () => {
+      const sourceBuffer = mediaSource.addSourceBuffer('audio/mpeg')
+      const reader = webStream.getReader()
+
+      try {
+        while (true) {
+          const {done, value} = await reader.read()
+          if (done) break
+
+          // Wait for any pending updates to complete
+          if (sourceBuffer.updating) {
+            await new Promise((resolve) => {
+              sourceBuffer.addEventListener('updateend', resolve, {once: true})
+            })
+          }
+          sourceBuffer.appendBuffer(value)
+        }
+
+        // Wait for final update to complete before ending stream
+        if (sourceBuffer.updating) {
+          await new Promise((resolve) => {
+            sourceBuffer.addEventListener('updateend', resolve, {once: true})
+          })
+        }
+        mediaSource.endOfStream()
+      } catch (err) {
+        console.error('error streaming audio:', err)
+        mediaSource.endOfStream('decode')
+      }
     })
 
-    const url = URL.createObjectURL(blob)
-    const audio = new Audio(url)
-
-    audio.onended = () => URL.revokeObjectURL(url)
-    audio.play()
-
-    return audio
+    audio.oncanplaythrough = () => audio.play()
+    audio.onended = () => {
+      URL.revokeObjectURL(audio.src)
+      audio.src = ''
+    }
   } catch (error) {
     console.error('Error synthesizing speech:', error)
     throw error
