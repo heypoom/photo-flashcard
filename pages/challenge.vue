@@ -40,9 +40,12 @@
 
     const compressedFile = await compress(file)
 
+    const entry = word.value
+    const targetWord = `${entry?.Word ?? ''} (meaning: ${entry?.Meaning})`
+
     const formData = new FormData()
     formData.append('photo', compressedFile)
-    formData.append('word', word.value?.Word ?? '')
+    formData.append('word', targetWord)
 
     console.log('--- verifying')
 
@@ -111,7 +114,7 @@
           </label>
         </div>
         
-        <SpeakButton v-if="word" :word="word.Word" class="!bg-blue-500 size-[45px]"/>
+        <SpeakButton v-if="word" :word="word.Word" class="!bg-blue-500 size-[45px]" />
 
         <Icon
           icon="solar:refresh-bold"

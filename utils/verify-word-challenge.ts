@@ -26,7 +26,7 @@ export async function verifyWordChallenge(
   gemini.generationConfig = generationConfig
 
   const verifyPrompt = `
-    Does the most prominent object in the photo matches this word: ${word}?
+    Does the most prominent object in the photo matches this word: ${word}
     Provide the response in { isCorrect: boolean }
   `
 
@@ -47,6 +47,8 @@ export async function verifyWordChallenge(
   } catch (error) {
     return false
   }
+
+  console.log(`--- challenge verify prediction:`, prediction)
 
   return prediction?.isCorrect ?? false
 }
