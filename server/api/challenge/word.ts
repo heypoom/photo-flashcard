@@ -1,12 +1,10 @@
-import type {IRecord} from 'grist-api'
-
-import {GRIST_API_PREFIX} from '~/constants/grist'
+import {gristSql} from '~/utils/grist-sql'
 
 export default defineEventHandler(async () => {
   let start = Date.now()
   console.log('--- /api/challenge/word starts')
 
-  const query = `select * from Words order by RANDOM() limit 1`
+  const query = 'select * from Words order by RANDOM() limit 1'
   const records = await gristSql<{Photos: string}>(query)
 
   console.log(`--- randomized row took ${Date.now() - start}ms`)
@@ -39,26 +37,4 @@ async function getAttachmentIdsForWord(
   return records.flatMap((record) => {
     return JSON.parse(record.Photo) as number[]
   })
-}
-
-export async function gristSql<T extends IRecord>(query: string, args?: any[]) {
-  const body = JSON.stringify({
-    sql: query,
-    timeout: 500,
-
-    ...(args && {args}),
-  })
-
-  const response = await fetch(`${GRIST_API_PREFIX}/sql`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${process.env.GRIST_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body,
-  })
-
-  const data: {records: {fields: T & IRecord}[]} = await response.json()
-
-  return data.records.map((record) => record.fields)
 }
