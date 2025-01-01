@@ -4,7 +4,8 @@
   import {speakWithPolly} from "../utils/polly"
 
   const props = defineProps<{
-    word?: string
+    word?: string,
+    class?: string
   }>()
 
   const isLoading = ref(false)
@@ -27,8 +28,7 @@
 <template>
   <Icon
     icon="solar:user-speak-bold"
-    class="text-[33px] cursor-pointer text-white bg-gray-700 hover:bg-gray-800 p-[6px] rounded-full"
-    :class="{'opacity-50': isLoading}"
+    :class="{'opacity-50': isLoading, 'text-[33px] cursor-pointer text-white bg-gray-700 hover:bg-gray-800 p-[6px] rounded-full': true, [props.class ?? '']: true}"
     @click="speak"
   />
 </template>

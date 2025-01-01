@@ -3,14 +3,7 @@
   import SpeakButton from "../components/SpeakButton.vue"
 
   import {prepareGuestCredentials} from "../utils/polly"
-
-  interface WordEntry {
-    id: string
-    attachmentId: string
-    Word: string
-    Meaning: string
-    Pronunciation: string
-  }
+  import type {WordEntry} from "../types/word-entry"
 
   const {data: words, refresh} = useFetch<WordEntry[]>('/api/words')
 
