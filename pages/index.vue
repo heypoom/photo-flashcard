@@ -12,9 +12,10 @@ const { data: albums, refresh } = await useFetch<
   }>
 >("/api/albums")
 
-const isCreating = ref(false)
+const isCreateDialogOpen = ref(false)
 const newAlbumName = ref("")
 const selectedLanguages = ref<Language[]>([])
+const isCreatingAlbum = ref(false)
 
 const availableLanguages: { value: Language; label: string }[] = [
   { value: "cn", label: "Chinese" },
@@ -26,18 +27,23 @@ const availableLanguages: { value: Language; label: string }[] = [
 async function createAlbum() {
   if (!newAlbumName.value || selectedLanguages.value.length === 0) return
 
-  await $fetch("/api/albums", {
-    method: "POST",
-    body: {
-      name: newAlbumName.value,
-      languages: selectedLanguages.value,
-    },
-  })
+  isCreatingAlbum.value = true
+  try {
+    await $fetch("/api/albums", {
+      method: "POST",
+      body: {
+        name: newAlbumName.value,
+        languages: selectedLanguages.value,
+      },
+    })
 
-  newAlbumName.value = ""
-  selectedLanguages.value = []
-  isCreating.value = false
-  refresh()
+    newAlbumName.value = ""
+    selectedLanguages.value = []
+    isCreateDialogOpen.value = false
+    refresh()
+  } finally {
+    isCreatingAlbum.value = false
+  }
 }
 </script>
 
@@ -82,7 +88,7 @@ async function createAlbum() {
           </div>
         </NuxtLink>
 
-        <div v-if="isCreating" class="bg-slate-900 rounded-lg p-6">
+        <div v-if="isCreateDialogOpen" class="bg-slate-900 rounded-lg p-6">
           <input
             v-model="newAlbumName"
             type="text"
@@ -111,13 +117,22 @@ async function createAlbum() {
           <div class="flex gap-2">
             <button
               @click="createAlbum"
-              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-              :disabled="!newAlbumName || selectedLanguages.length === 0"
+              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              :disabled="
+                !newAlbumName ||
+                selectedLanguages.length === 0 ||
+                isCreatingAlbum
+              "
             >
-              Create
+              <Icon
+                v-if="isCreatingAlbum"
+                icon="eos-icons:loading"
+                class="animate-spin"
+              />
+              {{ isCreatingAlbum ? "Creating..." : "Create" }}
             </button>
             <button
-              @click="isCreating = false"
+              @click="isCreateDialogOpen = false"
               class="bg-slate-700 text-white px-4 py-2 rounded hover:bg-slate-600"
             >
               Cancel
@@ -127,7 +142,7 @@ async function createAlbum() {
 
         <button
           v-else
-          @click="isCreating = true"
+          @click="isCreateDialogOpen = true"
           class="bg-slate-900 rounded-lg p-6 hover:bg-slate-800 transition-colors flex items-center justify-center"
         >
           <Icon
