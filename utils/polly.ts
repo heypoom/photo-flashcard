@@ -30,6 +30,13 @@ const pollyConfigMap: Record<
     LanguageCode: "en-US",
     VoiceId: "Joanna",
   },
+
+  // Vietnamese is not supported by Polly
+  // Uses English voice as a workaround
+  vi: {
+    LanguageCode: "en-US",
+    VoiceId: "Joanna",
+  },
 }
 
 let credentials:

@@ -1,1 +1,1 @@
-export type Language = "cn" | "jp" | "en"
+export type Language = "cn" | "jp" | "en" | "vi"
