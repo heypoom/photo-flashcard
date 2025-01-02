@@ -6,7 +6,7 @@ import Compressor from "compressorjs"
 import type { WordEntry } from "../../types/word-entry"
 
 const route = useRoute()
-const albumId = route.params.id
+const albumId = route.params.albumId
 
 const {
   data: word,
