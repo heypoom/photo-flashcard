@@ -17,16 +17,20 @@ export function getPhotoToWordPrompt(languages: Language[]) {
 
   const languageList = languages.map((lang) => languageNames[lang]).join(", ")
 
+  const translation = languages.includes("en")
+    ? "Translation in Thai when English is the target language. Otherwise, provide the English translation."
+    : "english translation"
+
   const prompt = `Return the most prominent object as a single word in the photo, translated into ${languageList}.
-Objective is language learning from photos. Meaning must be in English, except when learning English where it must be in Thai.
+Objective is language learning from photos.
 
 Provide the response as an array of translations in this format:
 [
   {
     word: "<word in target language>",
-    meaning: "<translation>",
+    meaning: "<${translation}>",
     pronunciation: "<pronunciation>", 
-    language: "<language code>"
+    language: "<language code of target language>"
   },
   ...
 ]
