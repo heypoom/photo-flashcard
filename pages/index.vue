@@ -3,7 +3,11 @@ import { Icon } from "@iconify/vue"
 import { ref } from "vue"
 import type { Language } from "~/types/language"
 
-const { data: albums, refresh } = await useFetch<
+const {
+  data: albums,
+  refresh,
+  status,
+} = useFetch<
   Array<{
     id: string
     name: string
@@ -49,6 +53,16 @@ async function createAlbum() {
 
 <template>
   <div class="bg-slate-950 min-h-screen">
+    <div
+      v-if="status === 'pending'"
+      class="w-full flex items-center justify-center pb-5 min-h-screen fixed left-0 top-0 pointer-events-none"
+    >
+      <Icon
+        icon="solar:refresh-broken"
+        class="animate-spin text-6xl text-white"
+      />
+    </div>
+
     <section class="container mx-auto px-4 py-6">
       <h1 class="text-4xl font-light text-white mb-8">My Albums</h1>
 

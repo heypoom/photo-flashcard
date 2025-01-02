@@ -4,15 +4,35 @@ import { ref } from "vue"
 import Compressor from "compressorjs"
 
 import type { WordEntry } from "../../types/word-entry"
+import type { Language } from "../../types/language"
+import type { Album } from "../../types/album"
 
 const route = useRoute()
 const albumId = route.params.albumId
+
+const selectedLanguage = ref<Language | null>(null)
+
+// Fetch album metadata which includes available languages
+const { data: album } = useFetch<Album>(`/api/albums/${albumId}`)
+
+watch(album, (nextAlbum) => {
+  console.log("--- album", nextAlbum)
+  selectedLanguage.value = nextAlbum?.Languages?.[0] ?? null
+})
+
+const hasMultipleLanguages = computed(
+  () => (album.value?.Languages?.length ?? 0) > 1,
+)
 
 const {
   data: word,
   refresh,
   status,
-} = useFetch<WordEntry>(`/api/challenge/${albumId}`)
+} = useFetch<WordEntry>(`/api/challenge/${albumId}`, {
+  query: computed(() => ({
+    language: selectedLanguage.value,
+  })),
+})
 
 const isLoadingWord = computed(() => status.value === "pending")
 
@@ -98,6 +118,14 @@ const uploadIconClass = computed(() => {
     "bg-green-500": isCorrectRef.value === true,
   }
 })
+
+// Add language display names
+const languageNames: Record<Language, string> = {
+  en: "English",
+  ja: "Japanese",
+  zh: "Chinese",
+  vi: "Vietnamese",
+}
 </script>
 
 <template>
@@ -105,7 +133,7 @@ const uploadIconClass = computed(() => {
     class="bg-slate-950 min-h-screen flex flex-col justify-center px-8 items-center"
   >
     <div
-      v-if="isLoadingWord && !word"
+      v-if="isLoadingWord && !word && album"
       class="w-full flex items-center justify-center pb-5 min-h-screen fixed left-0 top-0 pointer-events-none"
     >
       <Icon
@@ -165,6 +193,21 @@ const uploadIconClass = computed(() => {
           class="text-4xl text-white bg-slate-600 hover:bg-slate-700 p-1 rounded-full cursor-pointer"
         />
       </NuxtLink>
+    </div>
+
+    <div v-if="hasMultipleLanguages" class="fixed top-5 right-5">
+      <select
+        v-model="selectedLanguage"
+        class="bg-slate-700 text-white px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-600 transition-colors"
+      >
+        <option
+          v-for="lang in album?.Languages ?? []"
+          :key="lang"
+          :value="lang"
+        >
+          {{ languageNames[lang] }}
+        </option>
+      </select>
     </div>
   </div>
 
