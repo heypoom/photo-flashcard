@@ -47,7 +47,7 @@ onMounted(() => {
         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
       >
         <template v-if="album && album.Languages && album.Languages.length > 1">
-          <div class="col-span-full mb-4">
+          <div class="col-span-full mb-4 pt-14">
             <select
               v-model="selectedLanguage"
               class="bg-slate-800 text-white px-4 py-2 rounded-lg w-48"
