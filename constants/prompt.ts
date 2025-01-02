@@ -39,9 +39,11 @@ export function getPhotoToWordPrompt(languages: Language[]) {
       "- Avoid Kanji. Use easy native Japanese words instead of loanwords when possible."
   }
 
-  const prompt = `Return the most prominent object as a single word in the photo, translated into these languages only: "${languageList}".
-Objective is language learning from photos. Instructions:
+  const prompt = `Return the most prominent object as a single word in the photo, translated into these languages only: ${languageList}.
 
+Instructions:
+
+- Objective is language learning from photos.
 - Use these languages for translations: ${translationFormatList}.
 - Use these formats for pronunciations: ${pronunciationFormatList}.
 ${notices}
