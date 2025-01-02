@@ -17,6 +17,7 @@ export function getPhotoToWordPrompt(languages: Language[]) {
 
   const languageList = languages.map((lang) => languageNames[lang]).join(", ")
 
+  // TODO: make the home language per-user as each user has a differing native tongue
   const translation = languages.includes("en")
     ? "translation in Thai when English is the target language. Otherwise, provide the English translation."
     : "english translation"
