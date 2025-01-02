@@ -5,7 +5,7 @@ import { prepareGuestCredentials } from "../../utils/polly"
 import type { WordEntry } from "../../types/word-entry"
 
 const route = useRoute()
-const albumId = route.params.id
+const albumId = String(route.params.id)
 
 const {
   data: words,
@@ -67,7 +67,7 @@ onMounted(() => {
 
     <section class="flex fixed right-5 top-5">
       <NuxtLink
-        to="/challenge"
+        :to="`/challenge/${albumId}`"
         class="size-[40px] p-2 flex items-center justify-center bg-green-500 text-white rounded-full shadow-xl cursor-pointer"
       >
         <Icon icon="solar:test-tube-outline" class="text-[30px]" />
