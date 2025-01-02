@@ -2,15 +2,15 @@ import type { Language } from "~/types/language"
 
 export function getPhotoToWordPrompt(languages: Language[]) {
   const languageNames: Record<Language, string> = {
-    cn: "Simplified Chinese",
-    jp: "Japanese",
-    en: "English",
-    vi: "Vietnamese",
+    zh: "Simplified Chinese (zh)",
+    ja: "Japanese (ja)",
+    en: "English (en)",
+    vi: "Vietnamese (vi)",
   }
 
   const pronunciationFormats: Record<Language, string> = {
-    cn: "pinyin",
-    jp: "romaji",
+    zh: "pinyin",
+    ja: "romaji",
     en: "IPA",
     vi: "Vietnamese pronunciation",
   }

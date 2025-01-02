@@ -18,11 +18,11 @@ const pollyConfigMap: Record<
   Language,
   Pick<SynthesizeSpeechCommandInput, "LanguageCode" | "VoiceId">
 > = {
-  cn: {
+  zh: {
     LanguageCode: "cmn-CN",
     VoiceId: "Zhiyu",
   },
-  jp: {
+  ja: {
     LanguageCode: "ja-JP",
     VoiceId: "Tomoko",
   },
@@ -106,6 +106,8 @@ export async function speakWithPolly(message: string, language: Language) {
   })
 
   try {
+    console.log("--- speaking with polly:", message, language)
+
     const command = new SynthesizeSpeechCommand({
       Engine: "neural",
       OutputFormat: "mp3",

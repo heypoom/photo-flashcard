@@ -18,8 +18,8 @@ const selectedLanguages = ref<Language[]>([])
 const isCreatingAlbum = ref(false)
 
 const availableLanguages: { value: Language; label: string }[] = [
-  { value: "cn", label: "Chinese" },
-  { value: "jp", label: "Japanese" },
+  { value: "zh", label: "Chinese" },
+  { value: "ja", label: "Japanese" },
   { value: "en", label: "English" },
   { value: "vi", label: "Vietnamese" },
 ]
