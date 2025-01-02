@@ -8,8 +8,6 @@ import type { Album } from "~/types/album"
 const route = useRoute()
 const albumId = String(route.params.id)
 
-const selectedLanguage = ref<string | null>(null)
-
 const {
   data: words,
   refresh,
@@ -20,8 +18,11 @@ const { data: album, status: albumStatus } = useFetch<Album>(
   `/api/albums/${albumId}`,
 )
 
+const selectedLanguage = ref<string | null>(album.value?.Languages?.[0] ?? null)
+
 const filteredWords = computed(() => {
   if (!words.value || !selectedLanguage.value) return words.value
+
   return words.value.filter((word) => word.Language === selectedLanguage.value)
 })
 
