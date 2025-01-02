@@ -74,4 +74,13 @@ onMounted(() => {
       </NuxtLink>
     </section>
   </div>
+
+  <div class="fixed top-5 left-5">
+    <NuxtLink to="/">
+      <Icon
+        icon="solar:arrow-left-linear"
+        class="text-4xl text-white bg-slate-600 hover:bg-slate-700 p-1 rounded-full cursor-pointer"
+      />
+    </NuxtLink>
+  </div>
 </template>

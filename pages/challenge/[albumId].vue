@@ -3,13 +3,16 @@ import { Icon } from "@iconify/vue"
 import { ref } from "vue"
 import Compressor from "compressorjs"
 
-import type { WordEntry } from "../types/word-entry"
+import type { WordEntry } from "../../types/word-entry"
+
+const route = useRoute()
+const albumId = route.params.id
 
 const {
   data: word,
   refresh,
   status,
-} = useFetch<WordEntry>("/api/challenge/word")
+} = useFetch<WordEntry>(`/api/challenge/${albumId}`)
 
 const isLoadingWord = computed(() => status.value === "pending")
 
@@ -155,7 +158,7 @@ const uploadIconClass = computed(() => {
     </div>
 
     <div class="fixed top-5 left-5">
-      <NuxtLink to="/albums/1">
+      <NuxtLink :to="`/albums/${albumId}`">
         <Icon
           icon="solar:arrow-left-linear"
           class="text-4xl text-white bg-slate-600 hover:bg-slate-700 p-1 rounded-full cursor-pointer"
