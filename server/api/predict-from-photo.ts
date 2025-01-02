@@ -2,6 +2,7 @@ import sharp from "sharp"
 
 import { GRIST_API_PREFIX } from "~/constants/grist"
 import { Language } from "~/types/language"
+import { Prediction } from "~/types/prediction"
 import { getGristApi } from "~/utils/grist"
 import { predictWordAndMeaning } from "~/utils/predict-word"
 
@@ -14,9 +15,9 @@ export default defineEventHandler(async (event) => {
   const photo = formData?.find((part) => part.name === "photo")
   const albumId = formData?.find((part) => part.name === "albumId")
 
-  const language = String(
-    formData?.find((part) => part.name === "language")?.data,
-  ) as Language
+  const languages = JSON.parse(
+    String(formData?.find((part) => part.name === "languages")?.data),
+  ) as Language[]
 
   if (!photo?.data) {
     return { error: "No photo provided" }
@@ -54,7 +55,7 @@ export default defineEventHandler(async (event) => {
 
         const prediction = await predictWordAndMeaning(
           downscaledBuffer,
-          language,
+          languages,
         )
 
         if (!prediction) {
@@ -95,21 +96,19 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  const [prediction, photoRecordId] = results as [
-    { word: string; meaning: string; pronunciation: string },
-    number,
-  ]
+  const [predictions, photoRecordId] = results as [Prediction[], number]
 
-  await grist.addRecords("Words", [
-    {
-      Word: prediction.word,
-      Meaning: prediction.meaning,
-      Pronunciation: prediction.pronunciation,
-      Photos: ["L", photoRecordId],
-      Album: Number(albumId.data),
-      Language: language,
-    },
-  ])
+  // Add records for each languages specified
+  const records = predictions.map((prediction) => ({
+    Word: prediction.word,
+    Meaning: prediction.meaning,
+    Pronunciation: prediction.pronunciation,
+    Photos: ["L", photoRecordId] as ["L", number],
+    Album: Number(albumId.data),
+    Language: String(prediction.language),
+  }))
 
-  return prediction
+  await grist.addRecords("Words", records)
+
+  return predictions
 })

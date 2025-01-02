@@ -1,12 +1,37 @@
 import type { Language } from "~/types/language"
 
-export function getPhotoToWordPrompt(language: Language) {
-  const promptsForLanguage: Record<Language, string> = {
-    cn: `Return the most prominent object as a single word in the photo, and their translation in Simplified Chinese. Objective is language learning from photos. Provide the response in { word: "<chinese word>", meaning: "<english translation>", pronunciation: "<pronunciation of chinese word in pinyin>" }`,
-    jp: `Return the most prominent object as a single word in the photo, and their translation in Japanese. Objective is language learning from photos. Provide the response in { word: "<japanese word>", meaning: "<english translation>", pronunciation: "<pronunciation of japanese word in romaji>" }`,
-    en: `Return the most prominent object as a single word in the photo in English. Objective is language learning from photos. Provide the response in { word: "<english word>", meaning: "<english definition>", pronunciation: "<pronunciation in IPA>" }`,
-    vi: `Return the most prominent object as a single word in the photo, and their translation in Vietnamese. Objective is language learning from photos. Provide the response in { word: "<vietnamese word>", meaning: "<english translation>", pronunciation: "<pronunciation of vietnamese word>" }`,
+export function getPhotoToWordPrompt(languages: Language[]) {
+  const languageNames: Record<Language, string> = {
+    cn: "Simplified Chinese",
+    jp: "Japanese",
+    en: "English",
+    vi: "Vietnamese",
   }
 
-  return promptsForLanguage[language]
+  const pronunciationFormats: Record<Language, string> = {
+    cn: "pinyin",
+    jp: "romaji",
+    en: "IPA",
+    vi: "Vietnamese pronunciation",
+  }
+
+  const languageList = languages.map((lang) => languageNames[lang]).join(", ")
+
+  const prompt = `Return the most prominent object as a single word in the photo, translated into ${languageList}. 
+Objective is language learning from photos.
+
+Provide the response as an array of translations in this format:
+[
+  {
+    word: "<word in target language>",
+    meaning: "<english translation>", 
+    pronunciation: "<pronunciation>",
+    language: "<language code>"
+  },
+  ...
+]
+
+Use ${languages.map((lang) => `${pronunciationFormats[lang]} for ${languageNames[lang]}`).join(", ")} pronunciations respectively.`
+
+  return prompt
 }

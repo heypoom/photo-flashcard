@@ -4,11 +4,12 @@ import { gemini } from "./google-ai"
 
 import { getPhotoToWordPrompt } from "~/constants/prompt"
 import type { Language } from "~/types/language"
+import type { Prediction } from "~/types/prediction"
 
 export async function predictWordAndMeaning(
   photoBuffer: Buffer,
-  language: Language,
-) {
+  languages: Language[],
+): Promise<Prediction[] | null> {
   const generationConfig: GenerationConfig = {
     temperature: 1,
     topP: 0.95,
@@ -16,26 +17,32 @@ export async function predictWordAndMeaning(
     maxOutputTokens: 8192,
     responseMimeType: "application/json",
     responseSchema: {
-      type: SchemaType.OBJECT,
-      properties: {
-        word: {
-          type: SchemaType.STRING,
+      type: SchemaType.ARRAY,
+      items: {
+        type: SchemaType.OBJECT,
+        properties: {
+          word: {
+            type: SchemaType.STRING,
+          },
+          meaning: {
+            type: SchemaType.STRING,
+          },
+          pronunciation: {
+            type: SchemaType.STRING,
+          },
+          language: {
+            type: SchemaType.STRING,
+          },
         },
-        meaning: {
-          type: SchemaType.STRING,
-        },
-        pronunciation: {
-          type: SchemaType.STRING,
-        },
+        required: ["word", "meaning", "pronunciation", "language"],
       },
-      required: ["word", "meaning", "pronunciation"],
     } as const,
   }
 
   gemini.generationConfig = generationConfig
 
   const result = await gemini.generateContent([
-    getPhotoToWordPrompt(language),
+    getPhotoToWordPrompt(languages),
     {
       inlineData: {
         data: photoBuffer.toString("base64"),
@@ -44,17 +51,13 @@ export async function predictWordAndMeaning(
     },
   ])
 
-  let prediction: {
-    word: string
-    meaning: string
-    pronunciation: string
-  } | null
+  let predictions: Prediction[] | null
 
   try {
-    prediction = JSON.parse(result.response.text())
+    predictions = JSON.parse(result.response.text())
   } catch (error) {
     return null
   }
 
-  return prediction
+  return predictions
 }

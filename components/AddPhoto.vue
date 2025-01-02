@@ -2,10 +2,12 @@
 import { ref } from "vue"
 import Compressor from "compressorjs"
 import { Icon } from "@iconify/vue"
+import type { Language } from "~/types/language"
 
 const props = defineProps<{
   onSuccess?: () => void
   albumId: string | number
+  languages: Language[]
 }>()
 
 const uploadingRef = ref(false)
@@ -36,6 +38,7 @@ async function uploadAndPredict(event: Event) {
   const formData = new FormData()
   formData.append("photo", compressedFile)
   formData.append("albumId", props.albumId.toString())
+  formData.append("languages", JSON.stringify(props.languages))
 
   console.log("--- predicting")
 

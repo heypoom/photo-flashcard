@@ -3,6 +3,7 @@ import { Icon } from "@iconify/vue"
 
 import { prepareGuestCredentials } from "../../utils/polly"
 import type { WordEntry } from "../../types/word-entry"
+import type { Album } from "~/types/album"
 
 const route = useRoute()
 const albumId = String(route.params.id)
@@ -12,6 +13,10 @@ const {
   refresh,
   status,
 } = useFetch<WordEntry[]>(`/api/words/${albumId}`)
+
+const { data: album, status: albumStatus } = useFetch<Album>(
+  `/api/albums/${albumId}`,
+)
 
 onMounted(() => {
   prepareGuestCredentials()
@@ -62,7 +67,11 @@ onMounted(() => {
     <section
       class="flex justify-center w-full fixed bottom-5 gap-x-3 items-end"
     >
-      <AddPhoto v-on:success="refresh" :albumId="albumId" />
+      <AddPhoto
+        v-on:success="refresh"
+        :albumId="albumId"
+        :languages="album?.Languages ?? []"
+      />
     </section>
 
     <section class="flex fixed right-5 top-5">
