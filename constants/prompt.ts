@@ -19,7 +19,7 @@ export function getPhotoToWordPrompt(languages: Language[]) {
 
   // TODO: make the home language per-user as each user has a differing native tongue
   const translation = languages.includes("en")
-    ? "translation in Thai when English is the target language. Otherwise, provide the English translation."
+    ? "thai translation"
     : "english translation"
 
   const prompt = `Return the most prominent object as a single word in the photo, translated into these languages only: "${languageList}".
