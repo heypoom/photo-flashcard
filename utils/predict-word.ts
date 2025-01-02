@@ -46,6 +46,7 @@ export async function predictWordAndMeaning(
   })
 
   const result = await gemini.generateContent([
+    "translate",
     {
       inlineData: {
         data: photoBuffer.toString("base64"),
