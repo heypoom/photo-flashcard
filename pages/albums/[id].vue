@@ -4,7 +4,14 @@ import { Icon } from "@iconify/vue"
 import { prepareGuestCredentials } from "../../utils/polly"
 import type { WordEntry } from "../../types/word-entry"
 
-const { data: words, refresh, status } = useFetch<WordEntry[]>("/api/words")
+const route = useRoute()
+const albumId = route.params.id
+
+const {
+  data: words,
+  refresh,
+  status,
+} = useFetch<WordEntry[]>(`/api/words/${albumId}`)
 
 onMounted(() => {
   prepareGuestCredentials()
