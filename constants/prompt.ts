@@ -35,8 +35,8 @@ export function getPhotoToWordPrompt(languages: Language[]) {
   let notices = ""
 
   if (languages.includes("ja")) {
-    notices +=
-      "- Avoid Kanji. Use easy native Japanese words instead of loanwords when possible."
+    notices += `- Avoid Kanji. Use easy native Japanese words instead of loanwords when possible.
+- You must use romaji for Japanese pronunciations, such as akari or rōsoku.`
   }
 
   const prompt = `Return the most prominent object as a single word in the photo, translated into these languages only: ${languageList}.
