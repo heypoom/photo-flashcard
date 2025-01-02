@@ -1,6 +1,6 @@
 import { SchemaType, type GenerationConfig } from "@google/generative-ai"
 
-import { gemini } from "./google-ai"
+import { genAI } from "./google-ai"
 
 export async function verifyWordChallenge(
   photoBuffer: Buffer,
@@ -23,7 +23,10 @@ export async function verifyWordChallenge(
     } as const,
   }
 
-  gemini.generationConfig = generationConfig
+  const gemini = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash-exp",
+    generationConfig,
+  })
 
   const verifyPrompt = `
     Does the most prominent object in the photo matches this word: ${word}

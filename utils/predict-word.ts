@@ -1,6 +1,6 @@
 import { SchemaType, type GenerationConfig } from "@google/generative-ai"
 
-import { gemini } from "./google-ai"
+import { genAI } from "./google-ai"
 
 import { getPhotoToWordPrompt } from "~/constants/prompt"
 import type { Language } from "~/types/language"
@@ -39,10 +39,13 @@ export async function predictWordAndMeaning(
     } as const,
   }
 
-  gemini.generationConfig = generationConfig
+  const gemini = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash-exp",
+    generationConfig,
+    systemInstruction: getPhotoToWordPrompt(languages),
+  })
 
   const result = await gemini.generateContent([
-    getPhotoToWordPrompt(languages),
     {
       inlineData: {
         data: photoBuffer.toString("base64"),
