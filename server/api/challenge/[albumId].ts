@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const start = Date.now()
 
   const [record] = await gristSql<{ Photos: string }>(
-    "select Word, Pronunciation, Meaning from Words where AlbumId = ? order by RANDOM() limit 1",
+    "select Word, Pronunciation, Meaning, Language from Words where AlbumId = ? order by RANDOM() limit 1",
     [albumId],
   )
 
