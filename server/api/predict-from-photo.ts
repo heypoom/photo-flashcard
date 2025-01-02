@@ -1,3 +1,4 @@
+import { nanoid } from "nanoid"
 import sharp from "sharp"
 
 import { GRIST_API_PREFIX } from "~/constants/grist"
@@ -98,6 +99,10 @@ export default defineEventHandler(async (event) => {
 
   const [predictions, photoRecordId] = results as [Prediction[], number]
 
+  // To know which word are the same across languages, we create a shared key.
+  // This is used for multi-language albums for challenge mode.
+  const key = nanoid()
+
   // Add records for each languages specified
   const records = predictions.map((prediction) => ({
     Word: prediction.word,
@@ -106,6 +111,7 @@ export default defineEventHandler(async (event) => {
     Photos: ["L", photoRecordId] as ["L", number],
     Album: Number(albumId.data),
     Language: String(prediction.language),
+    Key: key,
   }))
 
   await grist.addRecords("Words", records)
