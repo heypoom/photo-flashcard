@@ -4,7 +4,7 @@ type WordRecord = {
   manualSort: number
   Photos: number[]
   UpdatedAt: number
-  Albums: number
+  Album: number
 }
 
 type PhotoRecord = {
@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
   const start = Date.now()
   const grist = getGristApi()
   const albumId = getRouterParam(event, "albumId")
-  const filter = { Albums: [Number(albumId)] }
+  const filter = { Album: [Number(albumId)] }
 
   const [words, photos] = await Promise.all([
     grist.fetchTable("Words", filter),

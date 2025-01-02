@@ -62,7 +62,7 @@ onMounted(() => {
     <section
       class="flex justify-center w-full fixed bottom-5 gap-x-3 items-end"
     >
-      <AddPhoto v-on:success="refresh" />
+      <AddPhoto v-on:success="refresh" :albumId="albumId" />
     </section>
 
     <section class="flex fixed right-5 top-5">

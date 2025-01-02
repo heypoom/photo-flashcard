@@ -5,6 +5,7 @@ import { Icon } from "@iconify/vue"
 
 const props = defineProps<{
   onSuccess?: () => void
+  albumId: string | number
 }>()
 
 const uploadingRef = ref(false)
@@ -34,6 +35,7 @@ async function uploadAndPredict(event: Event) {
 
   const formData = new FormData()
   formData.append("photo", compressedFile)
+  formData.append("albumId", props.albumId.toString())
 
   console.log("--- predicting")
 

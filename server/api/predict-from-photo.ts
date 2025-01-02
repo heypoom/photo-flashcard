@@ -11,9 +11,14 @@ export default defineEventHandler(async (event) => {
 
   const formData = await readMultipartFormData(event)
   const photo = formData?.find((part) => part.name === "photo")
+  const albumId = formData?.find((part) => part.name === "albumId")
 
   if (!photo?.data) {
     return { error: "No photo provided" }
+  }
+
+  if (!albumId?.data) {
+    return { error: "No album ID provided" }
   }
 
   let results: [unknown, unknown] = [null, null]
@@ -86,15 +91,13 @@ export default defineEventHandler(async (event) => {
     number,
   ]
 
-  // TODO: find the existing Words.Photos and append the new photo to the list.
   await grist.addRecords("Words", [
     {
       Word: prediction.word,
       Meaning: prediction.meaning,
       Pronunciation: prediction.pronunciation,
       Photos: ["L", photoRecordId],
-
-      // TODO: support multiple languages
+      Album: Number(albumId.data),
       Language: "cn",
     },
   ])

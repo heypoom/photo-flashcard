@@ -1,4 +1,5 @@
 import { getGristApi } from "~/utils/grist"
+import { gristSql } from "~/utils/grist-sql"
 
 export default defineEventHandler(async (event) => {
   const grist = getGristApi()
@@ -10,7 +11,7 @@ export default defineEventHandler(async (event) => {
     return albums.map((album) => ({
       id: album.id,
       name: album.Name,
-      wordCount: words.filter((word) => word.Albums === album.id).length,
+      wordCount: words.filter((word) => word.Album === album.id).length,
     }))
   }
 
