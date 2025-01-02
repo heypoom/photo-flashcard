@@ -1,6 +1,7 @@
 import sharp from "sharp"
 
 import { GRIST_API_PREFIX } from "~/constants/grist"
+import { Language } from "~/types/language"
 import { getGristApi } from "~/utils/grist"
 import { predictWordAndMeaning } from "~/utils/predict-word"
 
@@ -12,6 +13,10 @@ export default defineEventHandler(async (event) => {
   const formData = await readMultipartFormData(event)
   const photo = formData?.find((part) => part.name === "photo")
   const albumId = formData?.find((part) => part.name === "albumId")
+
+  const language = String(
+    formData?.find((part) => part.name === "language")?.data,
+  ) as Language
 
   if (!photo?.data) {
     return { error: "No photo provided" }
@@ -98,7 +103,7 @@ export default defineEventHandler(async (event) => {
       Pronunciation: prediction.pronunciation,
       Photos: ["L", photoRecordId],
       Album: Number(albumId.data),
-      Language: "cn",
+      Language: language,
     },
   ])
 

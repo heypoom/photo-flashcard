@@ -3,8 +3,9 @@
     "compressorjs",
     "iconify",
     "Nuxt",
+    "nuxtjs",
+    "romaji",
     "Tomoko",
-    "Zhiyu",
-    "romaji"
+    "Zhiyu"
   ]
 }

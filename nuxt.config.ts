@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: "2024-11-01",
   devtools: { enabled: true },
+  ssr: false,
   modules: ["@nuxtjs/tailwindcss", "nuxt-particles"],
 
   // Global CSS: https://go.nuxtjs.dev/config-css
