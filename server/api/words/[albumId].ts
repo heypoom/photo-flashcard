@@ -1,3 +1,4 @@
+import { Language } from "~/types/language"
 import { getGristApi } from "~/utils/grist"
 
 type WordRecord = {
@@ -5,6 +6,7 @@ type WordRecord = {
   Photos: number[]
   UpdatedAt: number
   Album: number
+  Language: Language
 }
 
 type PhotoRecord = {

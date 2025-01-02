@@ -8,6 +8,8 @@ import type { Album } from "~/types/album"
 const route = useRoute()
 const albumId = String(route.params.id)
 
+const selectedLanguage = ref<string | null>(null)
+
 const {
   data: words,
   refresh,
@@ -17,6 +19,11 @@ const {
 const { data: album, status: albumStatus } = useFetch<Album>(
   `/api/albums/${albumId}`,
 )
+
+const filteredWords = computed(() => {
+  if (!words.value || !selectedLanguage.value) return words.value
+  return words.value.filter((word) => word.Language === selectedLanguage.value)
+})
 
 onMounted(() => {
   prepareGuestCredentials()
@@ -39,8 +46,22 @@ onMounted(() => {
       <div
         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
       >
+        <template v-if="album && album.Languages && album.Languages.length > 1">
+          <div class="col-span-full mb-4">
+            <select
+              v-model="selectedLanguage"
+              class="bg-slate-800 text-white px-4 py-2 rounded-lg w-48"
+            >
+              <option :value="null">All Languages</option>
+              <option v-for="lang in album.Languages" :key="lang" :value="lang">
+                {{ lang }}
+              </option>
+            </select>
+          </div>
+        </template>
+
         <div
-          v-for="word in words"
+          v-for="word in filteredWords"
           class="flex flex-col bg-slate-900 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-4 justify-between"
         >
           <div class="relative">
