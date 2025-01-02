@@ -47,7 +47,7 @@ onMounted(() => {
   <div class="bg-slate-950 min-h-screen">
     <section class="container mx-auto px-4 py-6">
       <div
-        v-if="status === 'pending'"
+        v-if="status === 'pending' || albumStatus === 'pending'"
         class="w-full flex items-center justify-center pb-5 min-h-screen fixed left-0 top-0 pointer-events-none z-10"
       >
         <Icon
@@ -80,6 +80,7 @@ onMounted(() => {
         </template>
 
         <div
+          v-if="albumStatus === 'success'"
           v-for="word in filteredWords"
           class="flex flex-col bg-slate-900 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-4 justify-between"
         >
