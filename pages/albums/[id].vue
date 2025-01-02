@@ -23,7 +23,7 @@ onMounted(() => {
     <section class="container mx-auto px-4 py-6">
       <div
         v-if="status === 'pending'"
-        class="w-full flex items-center justify-center pb-5 min-h-screen fixed left-0 top-0 pointer-events-none"
+        class="w-full flex items-center justify-center pb-5 min-h-screen fixed left-0 top-0 pointer-events-none z-10"
       >
         <Icon
           icon="solar:refresh-broken"
