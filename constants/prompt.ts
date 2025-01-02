@@ -3,7 +3,7 @@ import type { Language } from "~/types/language"
 export function getPhotoToWordPrompt(languages: Language[]) {
   const languageNames: Record<Language, string> = {
     zh: "Simplified Chinese (zh)",
-    ja: "Japanese in Hiragana or Katakana (ja)",
+    ja: "Hiragana/Katakana Japanese (ja)",
     en: "English (en)",
     vi: "Vietnamese (vi)",
   }
