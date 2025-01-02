@@ -12,7 +12,7 @@ export function getPhotoToWordPrompt(languages: Language[]) {
     zh: "pinyin",
     ja: "romaji",
     en: "IPA",
-    vi: "Vietnamese pronunciation",
+    vi: "IPA",
   }
 
   const languageList = languages.map((lang) => languageNames[lang]).join(", ")
