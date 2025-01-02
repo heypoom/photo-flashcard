@@ -52,7 +52,6 @@ onMounted(() => {
               v-model="selectedLanguage"
               class="bg-slate-800 text-white px-4 py-2 rounded-lg w-48"
             >
-              <option :value="null">All Languages</option>
               <option v-for="lang in album.Languages" :key="lang" :value="lang">
                 {{ lang }}
               </option>
