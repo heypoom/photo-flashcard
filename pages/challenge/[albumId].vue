@@ -32,12 +32,14 @@ const {
   query: computed(() => ({
     language: selectedLanguage.value,
   })),
+  lazy: true,
+  immediate: false,
 })
 
-const isLoadingWord = computed(() => status.value === "pending")
+const isLoading = computed(() => !album.value || status.value === "pending")
 
 function nextWord() {
-  if (isLoadingWord.value) return
+  if (isLoading.value) return
 
   refresh()
 }
@@ -107,7 +109,7 @@ const uploadIcon = computed(() => {
 })
 
 const uploadIconClass = computed(() => {
-  if (isLoadingWord.value) {
+  if (isLoading.value) {
     return "bg-slate-800 opacity-50 cursor-progress"
   }
 
@@ -133,7 +135,7 @@ const languageNames: Record<Language, string> = {
     class="bg-slate-950 min-h-screen flex flex-col justify-center px-8 items-center"
   >
     <div
-      v-if="isLoadingWord && !word && album"
+      v-if="isLoading && !word && album"
       class="w-full flex items-center justify-center pb-5 min-h-screen fixed left-0 top-0 pointer-events-none"
     >
       <Icon
@@ -181,7 +183,7 @@ const languageNames: Record<Language, string> = {
           icon="solar:refresh-broken"
           class="text-[45px] size-[45px] p-[6px] text-white bg-slate-500 hover:bg-slate-700 rounded-full cursor-pointer"
           @click="nextWord"
-          :class="{ 'animate-spin opacity-50 cursor-progress': isLoadingWord }"
+          :class="{ 'animate-spin opacity-50 cursor-progress': isLoading }"
         />
       </div>
     </div>
