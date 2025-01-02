@@ -5,14 +5,21 @@ export default defineEventHandler(async (event) => {
   const grist = getGristApi()
 
   if (event.method === "GET") {
-    const albums = await grist.fetchTable("Albums")
-    const words = await grist.fetchTable("Words")
+    const start = Date.now()
 
-    return albums.map((album) => ({
-      id: album.id,
-      name: album.Name,
-      wordCount: words.filter((word) => word.Album === album.id).length,
-    }))
+    const albums = await gristSql(`
+      SELECT 
+        Albums.id,
+        Albums.Name as name,
+        COUNT(Words.id) as wordCount
+      FROM Albums
+      FULL JOIN Words ON Words.AlbumId = Albums.id
+      GROUP BY Albums.id, Albums.Name
+    `)
+
+    console.log(`--- GET /api/albums took ${Date.now() - start}ms`)
+
+    return albums
   }
 
   if (event.method === "POST") {
@@ -27,10 +34,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const [albumId] = await grist.addRecords("Albums", [
-      {
-        Name: name,
-        CreatedAt: Date.now(),
-      },
+      { Name: name, CreatedAt: Date.now() },
     ])
 
     return {
