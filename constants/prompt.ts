@@ -17,13 +17,19 @@ export function getPhotoToWordPrompt(languages: Language[]) {
 
   const languageList = languages.map((lang) => languageNames[lang]).join(", ")
 
-  // TODO: make the home language per-user as each user has a differing native tongue
+  const pronunciationFormatList = languages
+    .map((lang) => `${pronunciationFormats[lang]} for ${lang}`)
+    .join(", ")
+
+  // TODO: make the home language per-album as each user has a differing native tongue
   const translation = languages.includes("en")
     ? "thai translation"
     : "english translation"
 
   const prompt = `Return the most prominent object as a single word in the photo, translated into these languages only: "${languageList}".
 Objective is language learning from photos.
+
+Use these pronunciation formats: "${pronunciationFormatList}".
 
 Provide the response as an array of translations in this format:
 [
@@ -34,9 +40,7 @@ Provide the response as an array of translations in this format:
     language: "<language code of target language>"
   },
   ...
-]
-
-Use ${languages.map((lang) => `${pronunciationFormats[lang]} for ${languageNames[lang]}`).join(", ")} pronunciations respectively.`
+]`
 
   return prompt
 }
