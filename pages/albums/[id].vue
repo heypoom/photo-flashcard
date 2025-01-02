@@ -4,6 +4,7 @@ import { Icon } from "@iconify/vue"
 import { prepareGuestCredentials } from "../../utils/polly"
 import type { WordEntry } from "../../types/word-entry"
 import type { Album } from "~/types/album"
+import type { Language } from "~/types/language"
 
 const route = useRoute()
 const albumId = String(route.params.id)
@@ -18,7 +19,18 @@ const { data: album, status: albumStatus } = useFetch<Album>(
   `/api/albums/${albumId}`,
 )
 
-const selectedLanguage = ref<string | null>(album.value?.Languages?.[0] ?? null)
+const languageNames: Record<Language, string> = {
+  zh: "Chinese",
+  ja: "Japanese",
+  en: "English",
+  vi: "Vietnamese",
+}
+
+const selectedLanguage = ref<string | null>(null)
+
+onUpdated(() => {
+  selectedLanguage.value = album.value?.Languages?.[0] ?? null
+})
 
 const filteredWords = computed(() => {
   if (!words.value || !selectedLanguage.value) return words.value
@@ -47,14 +59,21 @@ onMounted(() => {
       <div
         class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
       >
-        <template v-if="album && album.Languages && album.Languages.length > 1">
+        <template
+          v-if="
+            album &&
+            album.Languages &&
+            album.Languages.length > 1 &&
+            selectedLanguage
+          "
+        >
           <div class="col-span-full mb-4 pt-14">
             <select
               v-model="selectedLanguage"
               class="bg-slate-800 text-white px-4 py-2 rounded-lg w-48"
             >
               <option v-for="lang in album.Languages" :key="lang" :value="lang">
-                {{ lang }}
+                {{ languageNames[lang] }}
               </option>
             </select>
           </div>
