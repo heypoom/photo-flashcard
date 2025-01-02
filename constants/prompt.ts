@@ -2,10 +2,10 @@ import type { Language } from "~/types/language"
 
 export function getPhotoToWordPrompt(languages: Language[]) {
   const languageNames: Record<Language, string> = {
-    zh: "Simplified Chinese (zh) with English translation",
-    ja: "Japanese (ja) with English translation",
-    en: "English (en) with Thai translation",
-    vi: "Vietnamese (vi) with English translation",
+    zh: "Simplified Chinese (zh)",
+    ja: "Japanese (ja)",
+    en: "English (en)",
+    vi: "Vietnamese (vi)",
   }
 
   const pronunciationFormats: Record<Language, string> = {
@@ -18,7 +18,7 @@ export function getPhotoToWordPrompt(languages: Language[]) {
   const languageList = languages.map((lang) => languageNames[lang]).join(", ")
 
   const prompt = `Return the most prominent object as a single word in the photo, translated into ${languageList}.
-Objective is language learning from photos.
+Objective is language learning from photos. Meaning must be in English, except when learning English where it must be in Thai.
 
 Provide the response as an array of translations in this format:
 [
