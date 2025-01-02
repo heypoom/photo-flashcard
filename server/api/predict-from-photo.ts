@@ -52,7 +52,11 @@ export default defineEventHandler(async (event) => {
           `--- resized! buffer is ${downscaledBuffer.length} bytes ---`,
         )
 
-        const prediction = await predictWordAndMeaning(downscaledBuffer)
+        const prediction = await predictWordAndMeaning(
+          downscaledBuffer,
+          language,
+        )
+
         if (!prediction) {
           return reject({ error: "Image not recognized" })
         }

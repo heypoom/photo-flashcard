@@ -7,7 +7,7 @@ import type { Language } from "~/types/language"
 
 export async function predictWordAndMeaning(
   photoBuffer: Buffer,
-  language: Language = "cn",
+  language: Language,
 ) {
   const generationConfig: GenerationConfig = {
     temperature: 1,

@@ -145,6 +145,7 @@ const uploadIconClass = computed(() => {
         <SpeakButton
           v-if="word"
           :word="word.Word"
+          :language="word.Language"
           class="!bg-blue-500 size-[45px]"
         />
 

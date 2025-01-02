@@ -89,10 +89,7 @@ export async function prepareGuestCredentials() {
   }
 }
 
-export async function speakWithPolly(
-  message: string,
-  language: Language = "cn",
-) {
+export async function speakWithPolly(message: string, language: Language) {
   await prepareGuestCredentials()
 
   if (!credentials) {

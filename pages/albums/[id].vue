@@ -46,7 +46,7 @@ onMounted(() => {
             />
 
             <div class="absolute right-4 bottom-[-2px]">
-              <SpeakButton :word="word.Word" />
+              <SpeakButton :word="word.Word" :language="word.Language" />
             </div>
           </div>
 

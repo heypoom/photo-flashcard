@@ -4,4 +4,5 @@ export interface WordEntry {
   Word: string
   Meaning: string
   Pronunciation: string
+  Language: string
 }

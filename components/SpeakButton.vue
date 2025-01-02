@@ -2,10 +2,12 @@
 import { Icon } from "@iconify/vue"
 
 import { speakWithPolly } from "../utils/polly"
+import type { Language } from "~/types/language"
 
 const props = defineProps<{
   word?: string
   class?: string
+  language: string
 }>()
 
 const isLoading = ref(false)
@@ -18,7 +20,7 @@ async function speak() {
   isLoading.value = true
 
   try {
-    await speakWithPolly(props.word)
+    await speakWithPolly(props.word, props.language as Language)
   } finally {
     isLoading.value = false
   }
