@@ -46,7 +46,7 @@ export default defineEventHandler(async (event) => {
     }
 
     const [albumId] = await grist.addRecords("Albums", [
-      { Name: name, CreatedAt: Date.now(), Languages: [languages.join(",")] },
+      { Name: name, CreatedAt: Date.now(), Languages: ["L", ...languages] },
     ])
 
     return {
