@@ -1,4 +1,8 @@
-import { PollyClient, SynthesizeSpeechCommand } from "@aws-sdk/client-polly"
+import {
+  PollyClient,
+  SynthesizeSpeechCommand,
+  type SynthesizeSpeechCommandInput,
+} from "@aws-sdk/client-polly"
 
 import {
   CognitoIdentityClient,
@@ -8,6 +12,26 @@ import {
 
 const REGION = "ap-southeast-1"
 const IDENTITY_POOL_ID = "ap-southeast-1:809ab693-ab94-490b-8b62-9d44589ebbf7"
+
+export type Language = "cn" | "jp" | "en"
+
+const pollyConfigMap: Record<
+  Language,
+  Pick<SynthesizeSpeechCommandInput, "LanguageCode" | "VoiceId">
+> = {
+  cn: {
+    LanguageCode: "cmn-CN",
+    VoiceId: "Zhiyu",
+  },
+  jp: {
+    LanguageCode: "ja-JP",
+    VoiceId: "Tomoko",
+  },
+  en: {
+    LanguageCode: "en-US",
+    VoiceId: "Joanna",
+  },
+}
 
 let credentials:
   | {
@@ -59,7 +83,10 @@ export async function prepareGuestCredentials() {
   }
 }
 
-export async function speakWithPolly(message: string) {
+export async function speakWithPolly(
+  message: string,
+  language: Language = "cn",
+) {
   await prepareGuestCredentials()
 
   if (!credentials) {
@@ -78,11 +105,10 @@ export async function speakWithPolly(message: string) {
   try {
     const command = new SynthesizeSpeechCommand({
       Engine: "neural",
-      LanguageCode: "cmn-CN",
       OutputFormat: "mp3",
       Text: message,
       TextType: "text",
-      VoiceId: "Zhiyu",
+      ...pollyConfigMap[language],
     })
 
     const { AudioStream } = await pollyClient.send(command)
