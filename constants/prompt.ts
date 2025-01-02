@@ -1,4 +1,4 @@
-import type { Language } from "@/utils/polly"
+import type { Language } from "~/types/language"
 
 export function getPhotoToWordPrompt(language: Language) {
   const promptsForLanguage: Record<Language, string> = {

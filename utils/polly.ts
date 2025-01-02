@@ -9,11 +9,10 @@ import {
   GetIdCommand,
   GetCredentialsForIdentityCommand,
 } from "@aws-sdk/client-cognito-identity"
+import type { Language } from "~/types/language"
 
 const REGION = "ap-southeast-1"
 const IDENTITY_POOL_ID = "ap-southeast-1:809ab693-ab94-490b-8b62-9d44589ebbf7"
-
-export type Language = "cn" | "jp" | "en"
 
 const pollyConfigMap: Record<
   Language,

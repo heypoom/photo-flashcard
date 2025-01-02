@@ -3,6 +3,7 @@ import { SchemaType, type GenerationConfig } from "@google/generative-ai"
 import { gemini } from "./google-ai"
 
 import { getPhotoToWordPrompt } from "~/constants/prompt"
+import type { Language } from "~/types/language"
 
 export async function predictWordAndMeaning(
   photoBuffer: Buffer,
