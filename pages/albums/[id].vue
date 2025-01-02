@@ -28,8 +28,8 @@ const languageNames: Record<Language, string> = {
 
 const selectedLanguage = ref<string | null>(null)
 
-onUpdated(() => {
-  selectedLanguage.value = album.value?.Languages?.[0] ?? null
+watch(album, (nextAlbum) => {
+  selectedLanguage.value = nextAlbum?.Languages?.[0] ?? null
 })
 
 const filteredWords = computed(() => {
