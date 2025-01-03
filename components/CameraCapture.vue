@@ -17,7 +17,6 @@ const videoRef = ref<HTMLVideoElement | null>(null)
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const stream = ref<MediaStream | null>(null)
 const isCameraActive = ref(false)
-const isFrontCamera = ref(true)
 const errorMessage = ref("")
 const useNativeFilePicker = ref(!isAndroid)
 
@@ -55,11 +54,7 @@ async function startCamera(): Promise<boolean> {
       return false
     }
 
-    const constraints = {
-      video: {
-        facingMode: isFrontCamera.value ? "user" : "environment",
-      },
-    }
+    const constraints = { video: { facingMode: "environment" } }
 
     stream.value = await navigator.mediaDevices.getUserMedia(constraints)
 
@@ -93,11 +88,6 @@ function stopCamera() {
     stream.value = null
     isCameraActive.value = false
   }
-}
-
-function switchCamera() {
-  isFrontCamera.value = !isFrontCamera.value
-  startCamera()
 }
 
 async function capturePhoto() {
@@ -240,14 +230,6 @@ onUnmounted(() => {
         </div>
       </label>
     </div>
-
-    <!-- Switch Camera Button -->
-    <button
-      @click="switchCamera"
-      class="size-[40px] bg-slate-500 hover:bg-slate-700 text-white p-2 rounded-full shadow-xl"
-    >
-      <Icon icon="solar:camera-rotate-broken" class="text-2xl" />
-    </button>
 
     <!-- Stop Camera Button -->
     <button
