@@ -9,12 +9,6 @@ interface RoomState {
     meaning: string
     language: string
   }
-  words: Array<{
-    word: string
-    pronunciation: string
-    meaning: string
-    language: string
-  }>
   playerCount: number
   players: Record<
     string,
@@ -57,7 +51,6 @@ export default class Server implements Party.Server {
 
     // Get or initialize room state
     const state = (await this.room.storage.get<RoomState>("state")) || {
-      words: [],
       currentWord: undefined,
       playerCount: 0,
       players: {},
@@ -67,11 +60,19 @@ export default class Server implements Party.Server {
     if (!state.players) {
       state.players = {}
     }
+
     if (!state.players[conn.id]) {
       state.players[conn.id] = {
         score: 0,
         emoji: EMOJIS[Math.floor(Math.random() * EMOJIS.length)],
       }
+    }
+
+    if (!state.currentWord) {
+      const albumId = this.room.id
+      const response = await fetch(`${API_PREFIX}/api/challenge/${albumId}`)
+      const word = await response.json()
+      state.currentWord = word
     }
 
     // Ensure playerCount is valid
@@ -89,57 +90,6 @@ export default class Server implements Party.Server {
         },
       }),
     )
-
-    // If no words loaded yet, fetch them from the API
-    if (state.words.length === 0) {
-      try {
-        const albumId = this.room.id
-        const response = await fetch(`${API_PREFIX}/api/words/${albumId}`)
-
-        if (!response.ok) {
-          console.error(
-            `Failed to fetch words: ${response.status} ${response.statusText}`,
-          )
-          return
-        }
-
-        const words = await response.json()
-
-        if (!Array.isArray(words)) {
-          console.error("Invalid words data received:", words)
-          return
-        }
-
-        state.words = words.map((w: any) => ({
-          word: w.Word,
-          pronunciation: w.Pronunciation || "",
-          meaning: w.Meaning || "",
-          language: w.Language,
-        }))
-
-        // Pick initial random word if none exists
-        if (!state.currentWord && state.words.length > 0) {
-          const randomIndex = Math.floor(Math.random() * state.words.length)
-          state.currentWord = state.words[randomIndex]
-        }
-
-        await this.room.storage.put("state", state)
-
-        // Broadcast the updated state with the new word
-        this.room.broadcast(
-          JSON.stringify({
-            type: "state",
-            data: {
-              word: state.currentWord,
-              playerCount: state.playerCount,
-              players: state.players,
-            },
-          }),
-        )
-      } catch (error) {
-        console.error("Error fetching or processing words:", error)
-      }
-    }
 
     // Send current state to the new connection
     conn.send(
@@ -160,14 +110,15 @@ export default class Server implements Party.Server {
 
       if (data.type === "next") {
         const state = await this.room.storage.get<RoomState>("state")
-        if (!state || !state.words || state.words.length === 0) {
+        if (!state) {
           console.error("Invalid state or no words available")
           return
         }
 
-        // Pick a random word
-        const randomIndex = Math.floor(Math.random() * state.words.length)
-        state.currentWord = state.words[randomIndex]
+        const albumId = this.room.id
+        const response = await fetch(`${API_PREFIX}/api/challenge/${albumId}`)
+        const word = await response.json()
+        state.currentWord = word
 
         // Ensure players object exists
         if (!state.players) {
