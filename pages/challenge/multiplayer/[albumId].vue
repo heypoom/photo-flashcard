@@ -195,7 +195,7 @@ function nextWord() {
       class="fixed inset-0 bg-black/50 flex items-center justify-center z-20"
       @click.self="showLeaderboard = false"
     >
-      <div class="bg-slate-800 rounded-xl p-6 w-full max-w-md mx-4">
+      <div class="mx-4 bg-slate-800 rounded-xl p-6 w-full max-w-md">
         <div class="flex justify-between items-center mb-4">
           <h2 class="text-white text-2xl font-bold">Leaderboard</h2>
           <Icon
