@@ -1,75 +1,33 @@
-# Nuxt Minimal Starter
+# Flashcard Scavenger Hunt 🌟
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+A fun and interactive way to learn vocabulary through real-world object recognition and drawing. Try it out at https://flashcard.poom.dev
 
-## Setup
+## Features
 
-Make sure to install dependencies:
+- 📸 Take photos of objects to match vocabulary words
+- ✏️ Draw pictures when objects aren't available
+- 🗣️ Text-to-speech pronunciation
+- 🎮 Multiplayer mode for competitive learning
+- 🌍 Multi-language support (English, Japanese, Chinese, Vietnamese)
+- 🎯 AI-powered image verification
+- 🎨 Built-in drawing canvas
+- 🎉 Celebratory animations for correct answers
 
-```bash
-# npm
-npm install
+## Screenshots
 
-# pnpm
-pnpm install
+<img src="docs/assets/demo.png" width="600" />
 
-# yarn
-yarn install
+## Tech Stack
 
-# bun
-bun install
-```
+- [Nuxt 3](https://nuxt.com/) - Vue.js Framework
+- [PartyKit](https://partykit.io) - Real-time multiplayer functionality
+- [Google Cloud Vision AI](https://cloud.google.com/vision) - Image recognition
+- [AWS Polly](https://aws.amazon.com/polly/) - Text-to-speech
+- [Vue Drawing Canvas](https://github.com/razztyfication/vue-drawing-canvas) - Drawing functionality
+- [Tailwind CSS](https://tailwindcss.com/) - Styling
 
-## Development Server
+## Self-hosting (WIP)
 
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+1. Clone the repository
+2. Install dependencies via bun
+3. Copy the env file from `.env.example`.
