@@ -6,9 +6,10 @@ const emit = defineEmits<{
   (e: "capture", file: File): void
 }>()
 
-const { uploading, isCorrect } = defineProps<{
+const { uploading, isCorrect, buttonGroupClass } = defineProps<{
   uploading: boolean
   isCorrect?: boolean | null
+  buttonGroupClass?: string
 }>()
 
 const videoRef = ref<HTMLVideoElement | null>(null)
@@ -150,7 +151,6 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <>
   <!-- Error Message -->
   <div
     v-if="errorMessage"
@@ -190,7 +190,8 @@ onUnmounted(() => {
   </div>
 
   <div
-    class="flex absolute gap-x-3 z-50 pt-1 left-20"
+    class="flex absolute gap-x-3 z-50 pt-1 left-16"
+    :class="buttonGroupClass"
     v-if="!useNativeFilePicker && isCameraActive"
   >
     <!-- Select File From Gallery -->

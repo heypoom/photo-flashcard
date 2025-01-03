@@ -51,7 +51,7 @@ async function handleCapture(file: File) {
 </script>
 
 <template>
-  <div class="flex">
+  <div class="flex relative">
     <CameraCapture
       @capture="handleCapture"
       :uploading="uploadingRef"
