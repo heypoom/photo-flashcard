@@ -2,14 +2,14 @@
 import { Icon } from "@iconify/vue"
 import { ref, onMounted, onBeforeUnmount } from "vue"
 import Compressor from "compressorjs"
-import type { Album } from "~/types/album"
 import { PartySocket } from "partysocket"
 
 const route = useRoute()
 const albumId = route.params.albumId
 
-// Fetch album metadata which includes available languages
-const { data: album } = useFetch<Album>(`/api/albums/${albumId}`)
+const PARTYKIT_HOST =
+  process.env.PARTYKIT_HOST ??
+  "https://flashcard-hunt-party.heypoom.partykit.dev"
 
 // PartyKit WebSocket connection
 const socket = ref<PartySocket | null>(null)
@@ -28,7 +28,7 @@ const isCorrectRef = ref<boolean | null>(null)
 onMounted(() => {
   // Connect to PartyKit server using PartySocket
   socket.value = new PartySocket({
-    host: "localhost:1999",
+    host: PARTYKIT_HOST,
     room: albumId as string,
   })
 
