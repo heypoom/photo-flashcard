@@ -72,6 +72,7 @@ onMounted(() => {
 
     try {
       const data = JSON.parse(event.data)
+
       if (data.type === "state") {
         currentWord.value = data.data.word
         playerCount.value = data.data.playerCount

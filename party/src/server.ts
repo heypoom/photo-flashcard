@@ -38,6 +38,18 @@ const EMOJIS = [
   "🦄",
 ]
 
+export const getRandomWord = async (albumId: string) => {
+  const response = await fetch(`${API_PREFIX}/api/challenge/${albumId}`)
+  const data = await response.json()
+
+  return {
+    word: data.Word,
+    pronunciation: data.Pronunciation,
+    meaning: data.Meaning,
+    language: data.Language,
+  }
+}
+
 export default class Server implements Party.Server {
   constructor(readonly room: Party.Room) {}
 
@@ -69,10 +81,7 @@ export default class Server implements Party.Server {
     }
 
     if (!state.currentWord) {
-      const albumId = this.room.id
-      const response = await fetch(`${API_PREFIX}/api/challenge/${albumId}`)
-      const word = await response.json()
-      state.currentWord = word
+      state.currentWord = await getRandomWord(this.room.id)
     }
 
     // Ensure playerCount is valid
@@ -115,10 +124,7 @@ export default class Server implements Party.Server {
           return
         }
 
-        const albumId = this.room.id
-        const response = await fetch(`${API_PREFIX}/api/challenge/${albumId}`)
-        const word = await response.json()
-        state.currentWord = word
+        state.currentWord = await getRandomWord(this.room.id)
 
         // Ensure players object exists
         if (!state.players) {
