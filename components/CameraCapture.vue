@@ -126,6 +126,7 @@ async function capturePhoto() {
         type: "image/jpeg",
       })
       emit("capture", file)
+      isCameraActive.value = false
     },
     "image/jpeg",
     0.8,
@@ -138,6 +139,7 @@ function handleFilePicker(event: Event) {
 
   if (file) {
     emit("capture", file)
+    isCameraActive.value = false
   }
 }
 
