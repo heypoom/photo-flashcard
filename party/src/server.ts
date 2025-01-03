@@ -64,6 +64,9 @@ export default class Server implements Party.Server {
     }
 
     // Initialize player if not exists
+    if (!state.players) {
+      state.players = {}
+    }
     if (!state.players[conn.id]) {
       state.players[conn.id] = {
         score: 0,
@@ -71,8 +74,8 @@ export default class Server implements Party.Server {
       }
     }
 
-    // Increment player count
-    state.playerCount++
+    // Ensure playerCount is valid
+    state.playerCount = Math.max(1, Object.keys(state.players).length)
     await this.room.storage.put("state", state)
 
     // Broadcast updated state
@@ -89,24 +92,53 @@ export default class Server implements Party.Server {
 
     // If no words loaded yet, fetch them from the API
     if (state.words.length === 0) {
-      const albumId = this.room.id
-      const response = await fetch(`${API_PREFIX}/api/words/${albumId}`)
-      const words = await response.json()
+      try {
+        const albumId = this.room.id
+        const response = await fetch(`${API_PREFIX}/api/words/${albumId}`)
 
-      state.words = words.map((w: any) => ({
-        word: w.Word,
-        pronunciation: w.Pronunciation || "",
-        meaning: w.Meaning || "",
-        language: w.Language,
-      }))
+        if (!response.ok) {
+          console.error(
+            `Failed to fetch words: ${response.status} ${response.statusText}`,
+          )
+          return
+        }
 
-      // Pick initial random word if none exists
-      if (!state.currentWord && state.words.length > 0) {
-        const randomIndex = Math.floor(Math.random() * state.words.length)
-        state.currentWord = state.words[randomIndex]
+        const words = await response.json()
+
+        if (!Array.isArray(words)) {
+          console.error("Invalid words data received:", words)
+          return
+        }
+
+        state.words = words.map((w: any) => ({
+          word: w.Word,
+          pronunciation: w.Pronunciation || "",
+          meaning: w.Meaning || "",
+          language: w.Language,
+        }))
+
+        // Pick initial random word if none exists
+        if (!state.currentWord && state.words.length > 0) {
+          const randomIndex = Math.floor(Math.random() * state.words.length)
+          state.currentWord = state.words[randomIndex]
+        }
+
+        await this.room.storage.put("state", state)
+
+        // Broadcast the updated state with the new word
+        this.room.broadcast(
+          JSON.stringify({
+            type: "state",
+            data: {
+              word: state.currentWord,
+              playerCount: state.playerCount,
+              players: state.players,
+            },
+          }),
+        )
+      } catch (error) {
+        console.error("Error fetching or processing words:", error)
       }
-
-      await this.room.storage.put("state", state)
     }
 
     // Send current state to the new connection
@@ -128,11 +160,19 @@ export default class Server implements Party.Server {
 
       if (data.type === "next") {
         const state = await this.room.storage.get<RoomState>("state")
-        if (!state || state.words.length === 0) return
+        if (!state || !state.words || state.words.length === 0) {
+          console.error("Invalid state or no words available")
+          return
+        }
 
         // Pick a random word
         const randomIndex = Math.floor(Math.random() * state.words.length)
         state.currentWord = state.words[randomIndex]
+
+        // Ensure players object exists
+        if (!state.players) {
+          state.players = {}
+        }
 
         // Save state
         await this.room.storage.put("state", state)
@@ -150,7 +190,15 @@ export default class Server implements Party.Server {
         )
       } else if (data.type === "correct") {
         const state = await this.room.storage.get<RoomState>("state")
-        if (!state) return
+        if (!state) {
+          console.error("No state found")
+          return
+        }
+
+        // Ensure players object exists
+        if (!state.players) {
+          state.players = {}
+        }
 
         // Increment player score
         if (state.players[sender.id]) {
@@ -178,10 +226,18 @@ export default class Server implements Party.Server {
   async onClose(conn: Party.Connection) {
     // Get current state
     const state = await this.room.storage.get<RoomState>("state")
-    if (!state) return
+    if (!state) {
+      console.error("No state found during close")
+      return
+    }
 
-    // Decrement player count
-    state.playerCount = Math.max(0, state.playerCount - 1)
+    // Ensure players object exists
+    if (!state.players) {
+      state.players = {}
+    }
+
+    // Decrement player count and ensure it's not negative
+    state.playerCount = Math.max(0, Object.keys(state.players).length - 1)
 
     // Remove player from players list
     delete state.players[conn.id]

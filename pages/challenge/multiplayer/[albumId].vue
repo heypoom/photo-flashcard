@@ -7,9 +7,9 @@ import { PartySocket } from "partysocket"
 const route = useRoute()
 const albumId = route.params.albumId
 
-const PARTYKIT_HOST =
-  process.env.PARTYKIT_HOST ??
-  "https://flashcard-hunt-party.heypoom.partykit.dev"
+const config = useRuntimeConfig()
+const PARTYKIT_HOST = config.public.partykitHost
+console.log("PARTYKIT_HOST", config.public)
 
 // PartyKit WebSocket connection
 const socket = ref<PartySocket | null>(null)
@@ -61,11 +61,15 @@ onMounted(() => {
   })
 
   socket.value.addEventListener("open", () => {
+    console.log(`-- connecting to ${PARTYKIT_HOST}`)
+
     isConnecting.value = false
     clientId.value = socket.value?.id ?? ""
   })
 
   socket.value.addEventListener("message", (event) => {
+    console.log("-- partykit message", event.data)
+
     try {
       const data = JSON.parse(event.data)
       if (data.type === "state") {
@@ -88,6 +92,8 @@ onMounted(() => {
   })
 
   socket.value.addEventListener("close", () => {
+    console.log("-- partykit socket closed")
+
     isConnecting.value = true
   })
 })
