@@ -28,14 +28,14 @@ const pollyConfigMap: Record<
   },
   en: {
     LanguageCode: "en-US",
-    VoiceId: "Joanna",
+    VoiceId: "Danielle",
   },
 
   // Vietnamese is not supported by Polly
   // Uses English voice as a workaround
   vi: {
     LanguageCode: "en-US",
-    VoiceId: "Joanna",
+    VoiceId: "Danielle",
   },
 }
 
