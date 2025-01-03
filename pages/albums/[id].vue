@@ -109,7 +109,7 @@ onMounted(() => {
       class="flex justify-center w-full fixed bottom-5 gap-x-3 items-end"
     >
       <AddPhoto
-        v-on:success="refresh"
+        @success="refresh"
         :albumId="albumId"
         :languages="album?.Languages ?? []"
       />

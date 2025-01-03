@@ -4,8 +4,11 @@ import Compressor from "compressorjs"
 import { Icon } from "@iconify/vue"
 import type { Language } from "~/types/language"
 
+const emit = defineEmits<{
+  (e: "success"): void
+}>()
+
 const props = defineProps<{
-  onSuccess?: () => void
   albumId: string | number
   languages: Language[]
 }>()
@@ -23,15 +26,8 @@ const compress = (file: File) =>
     })
   })
 
-async function uploadAndPredict(event: Event) {
+async function handleCapture(file: File) {
   uploadingRef.value = true
-  const target = event.target as HTMLInputElement
-
-  const file = target.files?.[0]
-
-  if (!file) {
-    return
-  }
 
   const compressedFile = await compress(file)
 
@@ -49,33 +45,13 @@ async function uploadAndPredict(event: Event) {
 
   console.log("response:", await response.text())
 
-  props.onSuccess?.()
+  emit("success")
   uploadingRef.value = false
 }
 </script>
 
 <template>
   <div class="flex">
-    <input
-      id="file-upload"
-      type="file"
-      v-on:change="uploadAndPredict"
-      class="hidden"
-      :disabled="uploadingRef"
-    />
-
-    <label for="file-upload">
-      <div
-        class="bg-red-500 text-white p-3 rounded-full shadow-xl cursor-pointer"
-        :class="{ 'opacity-30 animate-spin': uploadingRef }"
-      >
-        <Icon
-          :icon="
-            uploadingRef ? 'solar:clock-circle-outline' : 'solar:camera-bold'
-          "
-          class="text-3xl"
-        />
-      </div>
-    </label>
+    <CameraCapture @capture="handleCapture" :uploading="uploadingRef" />
   </div>
 </template>

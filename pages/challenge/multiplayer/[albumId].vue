@@ -113,15 +113,8 @@ const compress = (file: File) =>
     })
   })
 
-async function uploadAndVerifyWordChallenge(event: Event) {
+async function handleCapture(file: File) {
   uploadingRef.value = true
-  const target = event.target as HTMLInputElement
-
-  const file = target.files?.[0]
-
-  if (!file) {
-    return
-  }
 
   const compressedFile = await compress(file)
 
@@ -162,32 +155,6 @@ function nextWord() {
 
   socket.value.send(JSON.stringify({ type: "next" }))
 }
-
-const uploadIconClass = computed(() => {
-  if (uploadingRef.value) {
-    return "bg-yellow-500 animate-pulse"
-  }
-  if (isCorrectRef.value === true) {
-    return "bg-green-500"
-  }
-  if (isCorrectRef.value === false) {
-    return "bg-red-500"
-  }
-  return "bg-pink-500 hover:bg-pink-700"
-})
-
-const uploadIcon = computed(() => {
-  if (uploadingRef.value) {
-    return "solar:hourglass-line-duotone"
-  }
-  if (isCorrectRef.value === true) {
-    return "solar:check-circle-line-duotone"
-  }
-  if (isCorrectRef.value === false) {
-    return "solar:close-circle-line-duotone"
-  }
-  return "solar:camera-minimalistic-line-duotone"
-})
 </script>
 
 <template>
@@ -266,24 +233,13 @@ const uploadIcon = computed(() => {
     </section>
 
     <div class="fixed bottom-5">
-      <div class="w-full flex justify-center gap-x-3">
+      <div class="w-full flex justify-center items-end gap-x-3">
         <div class="flex">
-          <input
-            id="file-upload"
-            type="file"
-            v-on:change="uploadAndVerifyWordChallenge"
-            class="hidden"
-            :disabled="uploadingRef"
+          <CameraCapture
+            @capture="handleCapture"
+            :uploading="uploadingRef"
+            :is-correct="isCorrectRef"
           />
-
-          <label for="file-upload">
-            <div
-              class="text-white p-2 rounded-full shadow-xl cursor-pointer"
-              :class="uploadIconClass"
-            >
-              <Icon :icon="uploadIcon" class="text-3xl" />
-            </div>
-          </label>
         </div>
 
         <SpeakButton
