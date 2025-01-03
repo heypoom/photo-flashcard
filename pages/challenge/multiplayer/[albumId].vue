@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
-import { ref, onMounted, onBeforeUnmount } from "vue"
+import { ref, onMounted, onBeforeUnmount, computed } from "vue"
 import Compressor from "compressorjs"
 import { PartySocket } from "partysocket"
 
@@ -25,6 +25,34 @@ const currentWord = ref<{
 const uploadingRef = ref(false)
 const isCorrectRef = ref<boolean | null>(null)
 
+// Add player state
+const players = ref<Record<string, { score: number; emoji: string }>>({})
+const clientId = ref<string>("")
+const showLeaderboard = ref(false)
+
+// Add computed properties for scores with null checks
+const sortedPlayers = computed(() => {
+  if (!players.value || !clientId.value) return []
+
+  return Object.entries(players.value)
+    .map(([id, data]) => ({
+      id,
+      ...data,
+      isClient: id === clientId.value,
+    }))
+    .sort((a, b) => b.score - a.score)
+})
+
+const clientScore = computed(() => {
+  if (!players.value || !clientId.value) return 0
+  return players.value[clientId.value]?.score ?? 0
+})
+
+const clientEmoji = computed(() => {
+  if (!players.value || !clientId.value) return "👾"
+  return players.value[clientId.value]?.emoji ?? "👾"
+})
+
 onMounted(() => {
   // Connect to PartyKit server using PartySocket
   socket.value = new PartySocket({
@@ -34,6 +62,7 @@ onMounted(() => {
 
   socket.value.addEventListener("open", () => {
     isConnecting.value = false
+    clientId.value = socket.value?.id ?? ""
   })
 
   socket.value.addEventListener("message", (event) => {
@@ -43,12 +72,15 @@ onMounted(() => {
         currentWord.value = data.data.word
         playerCount.value = data.data.playerCount
 
+        // Only update players if the data exists
+        if (data.data.players) {
+          players.value = data.data.players
+        }
+
         // Request new word if none is present
         if (!data.data.word) {
           nextWord()
         }
-      } else if (data.type === "players") {
-        playerCount.value = data.data
       }
     } catch (error) {
       console.error("Error parsing message:", error)
@@ -105,6 +137,10 @@ async function uploadAndVerifyWordChallenge(event: Event) {
 
   uploadingRef.value = false
   isCorrectRef.value = isCorrect
+
+  if (isCorrect && socket.value) {
+    socket.value.send(JSON.stringify({ type: "correct" }))
+  }
 
   setTimeout(() => {
     isCorrectRef.value = null
@@ -168,6 +204,50 @@ const uploadIcon = computed(() => {
         class="text-2xl text-white"
       />
       <span class="text-white text-lg">{{ playerCount }}</span>
+    </div>
+
+    <!-- Add score display -->
+    <div
+      class="fixed top-5 left-1/2 -translate-x-1/2 flex items-center gap-x-2 bg-slate-800 px-4 py-2 rounded-full cursor-pointer"
+      @click="showLeaderboard = !showLeaderboard"
+    >
+      <span class="text-white text-lg">{{ clientEmoji }}</span>
+      <span class="text-white text-lg font-bold">{{ clientScore }}</span>
+    </div>
+
+    <!-- Add leaderboard -->
+    <div
+      v-if="showLeaderboard"
+      class="fixed inset-0 bg-black/50 flex items-center justify-center z-20"
+      @click.self="showLeaderboard = false"
+    >
+      <div class="bg-slate-800 rounded-xl p-6 w-full max-w-md">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-white text-2xl font-bold">Leaderboard</h2>
+          <Icon
+            icon="solar:close-circle-line-duotone"
+            class="text-2xl text-white cursor-pointer"
+            @click="showLeaderboard = false"
+          />
+        </div>
+
+        <div class="space-y-2">
+          <div
+            v-for="player in sortedPlayers"
+            :key="player.id"
+            class="flex items-center justify-between p-3 rounded-lg"
+            :class="player.isClient ? 'bg-pink-500/20' : 'bg-slate-700'"
+          >
+            <div class="flex items-center gap-x-2">
+              <span class="text-xl">{{ player.emoji }}</span>
+              <span class="text-white">{{
+                player.isClient ? "You" : `Player ${player.id.slice(0, 4)}`
+              }}</span>
+            </div>
+            <span class="text-white font-bold">{{ player.score }}</span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <section v-if="currentWord">
