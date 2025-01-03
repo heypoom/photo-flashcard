@@ -224,4 +224,6 @@ const uploadIcon = computed(() => {
       </NuxtLink>
     </div>
   </div>
+
+  <ConfettiEffect v-if="isCorrectRef === true" />
 </template>
