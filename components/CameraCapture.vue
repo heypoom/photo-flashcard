@@ -37,7 +37,7 @@ const uploadIcon = computed(() => {
   if (isCorrect === true) return "solar:check-circle-line-duotone"
   if (isCorrect === false) return "solar:close-circle-line-duotone"
 
-  return "solar:camera-minimalistic-line-duotone"
+  return "solar:camera-outline"
 })
 
 async function startCamera(): Promise<boolean> {
@@ -171,7 +171,7 @@ onUnmounted(() => {
     <Icon :icon="uploadIcon" class="text-3xl" />
   </div>
 
-  <div v-if="useNativeFilePicker" class="flex gap-x-3">
+  <div v-if="useNativeFilePicker && !isDrawingCanvasOpen" class="flex gap-x-3">
     <input
       type="file"
       accept="image/*"
@@ -202,9 +202,9 @@ onUnmounted(() => {
 
       <label for="file-picker">
         <div
-          class="text-white p-2 rounded-full shadow-xl cursor-pointer bg-slate-500"
+          class="text-white p-2 rounded-full shadow-xl cursor-pointer bg-slate-500 size-[45px] flex items-center justify-center"
         >
-          <Icon icon="solar:gallery-wide-bold" class="text-3xl" />
+          <Icon icon="solar:gallery-linear" class="text-[24px]" />
         </div>
       </label>
     </div>

@@ -117,7 +117,7 @@ onMounted(() => {
 
     <section
       class="flex flex-col fixed right-5 top-5 gap-y-4 z-auto"
-      v-if="!isCameraActive"
+      v-if="!isFullscreenWidgetOpen"
     >
       <NuxtLink :to="`/challenge/${albumId}`">
         <Icon
@@ -135,7 +135,7 @@ onMounted(() => {
     </section>
   </div>
 
-  <div class="fixed top-5 left-5" v-if="!isCameraActive">
+  <div class="fixed top-5 left-5" v-if="!isFullscreenWidgetOpen">
     <NuxtLink to="/">
       <Icon
         icon="solar:arrow-left-linear"

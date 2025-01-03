@@ -123,13 +123,11 @@ const languageNames: Record<Language, string> = {
 
     <div class="fixed bottom-5">
       <div class="w-full flex justify-center items-end gap-x-3">
-        <div class="flex">
-          <CameraCapture
-            @capture="handleCapture"
-            :uploading="uploadingRef"
-            :is-correct="isCorrectRef"
-          />
-        </div>
+        <CameraCapture
+          @capture="handleCapture"
+          :uploading="uploadingRef"
+          :is-correct="isCorrectRef"
+        />
 
         <SpeakButton
           v-if="word"
@@ -137,6 +135,8 @@ const languageNames: Record<Language, string> = {
           :language="word.Language"
           class="!bg-blue-500 size-[45px]"
         />
+
+        <DrawingButton @finish="handleCapture" />
 
         <Icon
           icon="solar:refresh-broken"
@@ -147,7 +147,7 @@ const languageNames: Record<Language, string> = {
       </div>
     </div>
 
-    <div class="fixed top-5 left-5" v-if="!isCameraActive">
+    <div class="fixed top-5 left-5" v-if="!isFullscreenWidgetOpen">
       <NuxtLink :to="`/albums/${albumId}`">
         <Icon
           icon="solar:arrow-left-linear"
@@ -156,7 +156,10 @@ const languageNames: Record<Language, string> = {
       </NuxtLink>
     </div>
 
-    <div v-if="hasMultipleLanguages" class="fixed top-5 right-5">
+    <div
+      v-if="hasMultipleLanguages && !isFullscreenWidgetOpen"
+      class="fixed top-5 right-5"
+    >
       <select
         v-model="selectedLanguage"
         class="bg-slate-700 text-white px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-600 transition-colors"

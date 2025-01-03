@@ -234,13 +234,11 @@ function nextWord() {
 
     <div class="fixed bottom-5">
       <div class="w-full flex justify-center items-end gap-x-3">
-        <div class="flex">
-          <CameraCapture
-            @capture="handleCapture"
-            :uploading="uploadingRef"
-            :is-correct="isCorrectRef"
-          />
-        </div>
+        <CameraCapture
+          @capture="handleCapture"
+          :uploading="uploadingRef"
+          :is-correct="isCorrectRef"
+        />
 
         <SpeakButton
           v-if="currentWord"
@@ -248,6 +246,8 @@ function nextWord() {
           :language="currentWord.language"
           class="!bg-blue-500 size-[45px]"
         />
+
+        <DrawingButton @finish="handleCapture" />
 
         <Icon
           icon="solar:refresh-broken"
@@ -257,7 +257,7 @@ function nextWord() {
       </div>
     </div>
 
-    <div class="fixed top-5 left-5" v-if="!isCameraActive">
+    <div class="fixed top-5 left-5" v-if="!isFullscreenWidgetOpen">
       <NuxtLink :to="`/albums/${albumId}`">
         <Icon
           icon="solar:arrow-left-linear"
