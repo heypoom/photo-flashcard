@@ -170,7 +170,6 @@ onUnmounted(() => {
         playsinline
         class="rounded-lg w-screen h-screen"
         :class="{ hidden: !isCameraActive }"
-        @click="stopCamera"
       ></video>
     </div>
   </div>
