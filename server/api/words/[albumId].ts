@@ -36,6 +36,7 @@ export default defineEventHandler(async (event) => {
 
       return {
         ...word,
+        photo,
         photoRefId,
         attachmentId,
       }

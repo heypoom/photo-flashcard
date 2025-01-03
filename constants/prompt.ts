@@ -44,11 +44,12 @@ export function getPhotoToWordPrompt(languages: Language[]) {
 Instructions:
 
 - Objective is language learning from photos.
+- Return one entry per language. Translation must be provided in the same object.
 - You must use these languages for translations: ${translationFormatList}.
 - You must use these formats for pronunciations: ${pronunciationFormatList}.
 ${notices}
 
-Provide the response as an array of translations in this format:
+Provide the response as an array in this format:
 [
   {
     word: "<word in target language>",

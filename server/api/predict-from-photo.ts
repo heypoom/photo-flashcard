@@ -81,12 +81,14 @@ export default defineEventHandler(async (event) => {
           },
         })
 
-        const attachmentResponse: number[] = await response.json()
-        console.log("--- attachment response:", attachmentResponse)
+        const [attachmentId]: number[] = await response.json()
+        console.log("--- /api/predict-from-photo: attachment id:", attachmentId)
 
         const [photoRecordId] = await grist.addRecords("Photos", [
-          { Photo: attachmentResponse[0] },
+          { Photo: ["L", attachmentId] },
         ])
+
+        console.log("--- /api/predict-from-photo: photo record:", photoRecordId)
 
         resolve(photoRecordId)
       }),
@@ -116,5 +118,5 @@ export default defineEventHandler(async (event) => {
 
   await grist.addRecords("Words", records)
 
-  return predictions
+  return predictions.filter((p) => languages.includes(p.language))
 })
