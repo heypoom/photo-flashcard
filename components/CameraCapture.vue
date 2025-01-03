@@ -164,7 +164,7 @@ onUnmounted(() => {
   </div>
 
   <!-- Camera Preview -->
-  <div class="fixed top-0 left-0 z-0 bg-slate-800">
+  <div class="fixed top-0 left-0 z-0 bg-black">
     <div class="rounded-lg overflow-hidden">
       <video
         ref="videoRef"
