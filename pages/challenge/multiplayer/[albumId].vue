@@ -1,51 +1,63 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
-import { ref } from "vue"
+import { ref, onMounted, onBeforeUnmount } from "vue"
 import Compressor from "compressorjs"
-
-import type { WordEntry } from "../../types/word-entry"
-import type { Language } from "../../types/language"
-import type { Album } from "../../types/album"
+import type { Album } from "~/types/album"
+import { PartySocket } from "partysocket"
 
 const route = useRoute()
 const albumId = route.params.albumId
 
-const selectedLanguage = ref<Language | null>(null)
-
 // Fetch album metadata which includes available languages
 const { data: album } = useFetch<Album>(`/api/albums/${albumId}`)
 
-watch(album, (nextAlbum) => {
-  console.log("--- album", nextAlbum)
-  selectedLanguage.value = nextAlbum?.Languages?.[0] ?? null
-})
-
-const hasMultipleLanguages = computed(
-  () => (album.value?.Languages?.length ?? 0) > 1,
-)
-
-const {
-  data: word,
-  refresh,
-  status,
-} = useFetch<WordEntry>(`/api/challenge/${albumId}`, {
-  query: computed(() => ({
-    language: selectedLanguage.value,
-  })),
-  lazy: true,
-  immediate: false,
-})
-
-const isLoading = computed(() => !album.value || status.value === "pending")
-
-function nextWord() {
-  if (isLoading.value) return
-
-  refresh()
-}
+// PartyKit WebSocket connection
+const socket = ref<PartySocket | null>(null)
+const isConnecting = ref(true)
+const playerCount = ref(0)
+const currentWord = ref<{
+  word: string
+  pronunciation: string
+  meaning: string
+  language: string
+} | null>(null)
 
 const uploadingRef = ref(false)
 const isCorrectRef = ref<boolean | null>(null)
+
+onMounted(() => {
+  // Connect to PartyKit server using PartySocket
+  socket.value = new PartySocket({
+    host: "localhost:1999",
+    room: albumId as string,
+  })
+
+  socket.value.addEventListener("open", () => {
+    isConnecting.value = false
+  })
+
+  socket.value.addEventListener("message", (event) => {
+    try {
+      const data = JSON.parse(event.data)
+      if (data.type === "state") {
+        currentWord.value = data.data.word
+        playerCount.value = data.data.playerCount
+      } else if (data.type === "players") {
+        playerCount.value = data.data
+      }
+    } catch (error) {
+      console.error("Error parsing message:", error)
+    }
+  })
+
+  socket.value.addEventListener("close", () => {
+    isConnecting.value = true
+  })
+})
+
+onBeforeUnmount(() => {
+  socket.value?.close()
+})
 
 const compress = (file: File) =>
   new Promise<File | Blob>((resolve) => {
@@ -70,8 +82,8 @@ async function uploadAndVerifyWordChallenge(event: Event) {
 
   const compressedFile = await compress(file)
 
-  const entry = word.value
-  const targetWord = `${entry?.Word ?? ""} (meaning: ${entry?.Meaning})`
+  const entry = currentWord.value
+  const targetWord = `${entry?.word ?? ""} (meaning: ${entry?.meaning})`
 
   const formData = new FormData()
   formData.append("photo", compressedFile)
@@ -96,6 +108,11 @@ async function uploadAndVerifyWordChallenge(event: Event) {
       nextWord()
     }
   }, 3000)
+}
+
+function nextWord() {
+  if (!socket.value) return
+  socket.value.send(JSON.stringify({ type: "next" }))
 }
 
 const uploadIconClass = computed(() => {
@@ -123,14 +140,6 @@ const uploadIcon = computed(() => {
   }
   return "solar:camera-minimalistic-line-duotone"
 })
-
-// Add language display names
-const languageNames: Record<Language, string> = {
-  en: "English",
-  ja: "Japanese",
-  zh: "Chinese",
-  vi: "Vietnamese",
-}
 </script>
 
 <template>
@@ -138,19 +147,29 @@ const languageNames: Record<Language, string> = {
     class="bg-slate-950 min-h-screen flex flex-col justify-center px-8 items-center"
   >
     <div
-      v-if="isLoading && !word && album"
-      class="w-full flex items-center justify-center pb-5 min-h-screen fixed left-0 top-0 pointer-events-none"
+      v-if="isConnecting"
+      class="w-full flex items-center justify-center pb-5 min-h-screen fixed left-0 top-0 pointer-events-none z-10"
     >
       <Icon
         icon="solar:refresh-broken"
-        class="animate-spin text-6xl text-gray-400"
+        class="animate-spin text-6xl text-white"
       />
     </div>
 
-    <section v-if="word">
+    <div class="fixed top-5 right-5 flex items-center gap-x-2">
+      <Icon
+        icon="solar:users-group-rounded-line-duotone"
+        class="text-2xl text-white"
+      />
+      <span class="text-white text-lg">{{ playerCount }}</span>
+    </div>
+
+    <section v-if="currentWord">
       <div class="p-4">
-        <div class="text-white text-4xl font-bold mb-2">{{ word.Word }}</div>
-        <div class="text-white text-2xl">{{ word.Pronunciation }}</div>
+        <div class="text-white text-4xl font-bold mb-2">
+          {{ currentWord.word }}
+        </div>
+        <div class="text-white text-2xl">{{ currentWord.pronunciation }}</div>
       </div>
     </section>
 
@@ -176,9 +195,9 @@ const languageNames: Record<Language, string> = {
         </div>
 
         <SpeakButton
-          v-if="word"
-          :word="word.Word"
-          :language="word.Language"
+          v-if="currentWord"
+          :word="currentWord.word"
+          :language="currentWord.language"
           class="!bg-blue-500 size-[45px]"
         />
 
@@ -186,7 +205,6 @@ const languageNames: Record<Language, string> = {
           icon="solar:refresh-broken"
           class="text-[45px] size-[45px] p-[6px] text-white bg-slate-500 hover:bg-slate-700 rounded-full cursor-pointer"
           @click="nextWord"
-          :class="{ 'animate-spin opacity-50 cursor-progress': isLoading }"
         />
       </div>
     </div>
@@ -199,22 +217,5 @@ const languageNames: Record<Language, string> = {
         />
       </NuxtLink>
     </div>
-
-    <div v-if="hasMultipleLanguages" class="fixed top-5 right-5">
-      <select
-        v-model="selectedLanguage"
-        class="bg-slate-700 text-white px-3 py-2 rounded-lg cursor-pointer hover:bg-slate-600 transition-colors"
-      >
-        <option
-          v-for="lang in album?.Languages ?? []"
-          :key="lang"
-          :value="lang"
-        >
-          {{ languageNames[lang] }}
-        </option>
-      </select>
-    </div>
   </div>
-
-  <ConfettiEffect v-if="isCorrectRef === true" />
 </template>

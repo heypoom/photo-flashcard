@@ -1,10 +1,27 @@
 import type * as Party from "partykit/server"
 
+const API_PREFIX = process.env.API_PREFIX
+
+interface RoomState {
+  currentWord?: {
+    word: string
+    pronunciation: string
+    meaning: string
+    language: string
+  }
+  words: Array<{
+    word: string
+    pronunciation: string
+    meaning: string
+    language: string
+  }>
+  playerCount: number
+}
+
 export default class Server implements Party.Server {
   constructor(readonly room: Party.Room) {}
 
-  onConnect(conn: Party.Connection, ctx: Party.ConnectionContext) {
-    // A websocket just connected!
+  async onConnect(conn: Party.Connection, ctx: Party.ConnectionContext) {
     console.log(
       `Connected:
   id: ${conn.id}
@@ -12,18 +29,99 @@ export default class Server implements Party.Server {
   url: ${new URL(ctx.request.url).pathname}`,
     )
 
-    // let's send a message to the connection
-    conn.send("hello from server")
+    // Get or initialize room state
+    const state = (await this.room.storage.get<RoomState>("state")) || {
+      words: [],
+      currentWord: undefined,
+      playerCount: 0,
+    }
+
+    // Increment player count
+    state.playerCount++
+    await this.room.storage.put("state", state)
+
+    // Broadcast updated player count
+    this.room.broadcast(
+      JSON.stringify({
+        type: "players",
+        data: state.playerCount,
+      }),
+    )
+
+    // If no words loaded yet, fetch them from the API
+    if (state.words.length === 0) {
+      const albumId = this.room.id
+      const response = await fetch(`${API_PREFIX}/api/words/${albumId}`)
+      const words = await response.json()
+
+      state.words = words.map((w: any) => ({
+        word: w.Word,
+        pronunciation: w.Pronunciation || "",
+        meaning: w.Meaning || "",
+        language: w.Language,
+      }))
+
+      await this.room.storage.put("state", state)
+    }
+
+    // Send current state to the new connection
+    conn.send(
+      JSON.stringify({
+        type: "state",
+        data: {
+          word: state.currentWord,
+          playerCount: state.playerCount,
+        },
+      }),
+    )
   }
 
-  onMessage(message: string, sender: Party.Connection) {
-    // let's log the message
-    console.log(`connection ${sender.id} sent message: ${message}`)
-    // as well as broadcast it to all the other connections in the room...
+  async onMessage(message: string, sender: Party.Connection) {
+    try {
+      const data = JSON.parse(message)
+
+      if (data.type === "next") {
+        const state = await this.room.storage.get<RoomState>("state")
+        if (!state || state.words.length === 0) return
+
+        // Pick a random word
+        const randomIndex = Math.floor(Math.random() * state.words.length)
+        state.currentWord = state.words[randomIndex]
+
+        // Save state
+        await this.room.storage.put("state", state)
+
+        // Broadcast new word to all connections
+        this.room.broadcast(
+          JSON.stringify({
+            type: "state",
+            data: {
+              word: state.currentWord,
+              playerCount: state.playerCount,
+            },
+          }),
+        )
+      }
+    } catch (error) {
+      console.error("Error processing message:", error)
+    }
+  }
+
+  async onClose(conn: Party.Connection) {
+    // Get current state
+    const state = await this.room.storage.get<RoomState>("state")
+    if (!state) return
+
+    // Decrement player count
+    state.playerCount = Math.max(0, state.playerCount - 1)
+    await this.room.storage.put("state", state)
+
+    // Broadcast updated player count
     this.room.broadcast(
-      `${sender.id}: ${message}`,
-      // ...except for the connection it came from
-      [sender.id],
+      JSON.stringify({
+        type: "players",
+        data: state.playerCount,
+      }),
     )
   }
 }

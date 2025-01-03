@@ -113,6 +113,20 @@ onMounted(() => {
         :albumId="albumId"
         :languages="album?.Languages ?? []"
       />
+
+      <NuxtLink :to="`/challenge/${albumId}`">
+        <Icon
+          icon="solar:play-circle-line-duotone"
+          class="text-[45px] size-[45px] p-[6px] text-white bg-slate-500 hover:bg-slate-700 rounded-full cursor-pointer"
+        />
+      </NuxtLink>
+
+      <NuxtLink :to="`/challenge/multiplayer/${albumId}`">
+        <Icon
+          icon="solar:users-group-rounded-line-duotone"
+          class="text-[45px] size-[45px] p-[6px] text-white bg-slate-500 hover:bg-slate-700 rounded-full cursor-pointer"
+        />
+      </NuxtLink>
     </section>
 
     <section class="flex fixed right-5 top-5">
