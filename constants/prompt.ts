@@ -35,7 +35,7 @@ export function getPhotoToWordPrompt(languages: Language[]) {
   let notices = ""
 
   if (languages.includes("ja")) {
-    notices += `- Avoid Kanji. Use easy native Japanese words in hiragana and loanwords in katakana.
+    notices += `- Do not use Kanji. Write easy native Japanese words in hiragana and loanwords in katakana, for beginner language learning.
 - You must use romaji for Japanese pronunciations, such as akari or rōsoku.`
   }
 
