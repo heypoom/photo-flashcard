@@ -1,6 +1,6 @@
 import type * as Party from "partykit/server"
 
-const API_PREFIX = process.env.API_PREFIX
+const API_PREFIX = process.env.API_PREFIX ?? "https://flashcard.poom.dev"
 
 interface RoomState {
   currentWord?: {
