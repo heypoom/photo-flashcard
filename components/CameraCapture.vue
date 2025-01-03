@@ -12,6 +12,8 @@ const { uploading, isCorrect, buttonGroupClass } = defineProps<{
   buttonGroupClass?: string
 }>()
 
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+
 const videoRef = ref<HTMLVideoElement | null>(null)
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const stream = ref<MediaStream | null>(null)
@@ -27,7 +29,7 @@ const uploadIconClass = computed(() => {
     return "bg-indigo-500 hover:bg-indigo-700"
   }
 
-  return "bg-pink-500 hover:bg-pink-700"
+  return "bg-pink-500"
 })
 
 const uploadIcon = computed(() => {
@@ -169,7 +171,7 @@ onUnmounted(() => {
     <Icon :icon="uploadIcon" class="text-3xl" />
   </div>
 
-  <div v-if="useNativeFilePicker">
+  <div v-if="useNativeFilePicker" class="flex gap-x-3">
     <input
       type="file"
       accept="image/*"
@@ -187,6 +189,25 @@ onUnmounted(() => {
         <Icon :icon="uploadIcon" class="text-3xl" />
       </div>
     </label>
+
+    <!-- Select File From Gallery -->
+    <div v-if="isMobile">
+      <input
+        type="file"
+        accept="image/*"
+        @change="handleFilePicker"
+        class="hidden"
+        id="file-picker"
+      />
+
+      <label for="file-picker">
+        <div
+          class="text-white p-2 rounded-full shadow-xl cursor-pointer bg-slate-500"
+        >
+          <Icon icon="solar:gallery-wide-bold" class="text-3xl" />
+        </div>
+      </label>
+    </div>
   </div>
 
   <div
@@ -194,26 +215,6 @@ onUnmounted(() => {
     :class="buttonGroupClass"
     v-if="!useNativeFilePicker && isCameraActive"
   >
-    <!-- Select File From Gallery -->
-    <div>
-      <input
-        type="file"
-        accept="image/*"
-        @change="handleFilePicker"
-        class="hidden"
-        id="file-picker"
-        capture="environment"
-      />
-
-      <label for="file-picker">
-        <div
-          class="flex items-center justify-center size-[40px] bg-slate-500 hover:bg-slate-700 text-white p-2 rounded-full shadow-xl cursor-pointer"
-        >
-          <Icon icon="solar:gallery-wide-bold" class="text-3xl" />
-        </div>
-      </label>
-    </div>
-
     <!-- Stop Camera Button -->
     <button
       @click="stopCamera"
