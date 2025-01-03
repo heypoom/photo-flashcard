@@ -1,6 +1,7 @@
 import { GristDocAPI } from "grist-api"
 
-const GRIST_DOC_URL = "https://docs.getgrist.com/3V4SbuMmR4M3/Photo-Flashcard"
+const GRIST_DOC_URL =
+  "https://grist.creatorsgarten.org/6ZgjVMTXyAbV/Photo-Flashcard"
 
 export const getGristApi = () =>
   new GristDocAPI(GRIST_DOC_URL, {

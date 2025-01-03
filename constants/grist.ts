@@ -1,2 +1,2 @@
-export const GRIST_DOC_ID = "3V4SbuMmR4M3Urtpso7bAA"
-export const GRIST_API_PREFIX = `https://docs.getgrist.com/api/docs/${GRIST_DOC_ID}`
+export const GRIST_DOC_ID = "6ZgjVMTXyAbVkupFE7mGQR"
+export const GRIST_API_PREFIX = `https://grist.creatorsgarten.org/api/docs/${GRIST_DOC_ID}`

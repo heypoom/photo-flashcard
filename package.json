@@ -27,6 +27,7 @@
     "nuxt": "^3.14.1592",
     "nuxt-particles": "^0.3.0",
     "partykit": "^0.0.111",
+    "partysocket": "^1.0.3",
     "sharp": "^0.33.5",
     "vue": "latest",
     "vue-router": "latest"
