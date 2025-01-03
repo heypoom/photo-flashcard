@@ -112,6 +112,7 @@ async function uploadAndVerifyWordChallenge(event: Event) {
 
 function nextWord() {
   if (!socket.value) return
+
   socket.value.send(JSON.stringify({ type: "next" }))
 }
 
