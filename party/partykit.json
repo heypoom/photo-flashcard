@@ -1,0 +1,6 @@
+{
+  "$schema": "https://www.partykit.io/schema.json",
+  "name": "flashcard-hunt-party",
+  "main": "src/server.ts",
+  "compatibilityDate": "2025-01-03"
+}

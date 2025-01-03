@@ -26,12 +26,17 @@
     "nanoid": "^5.0.9",
     "nuxt": "^3.14.1592",
     "nuxt-particles": "^0.3.0",
+    "partykit": "^0.0.111",
     "sharp": "^0.33.5",
     "vue": "latest",
     "vue-router": "latest"
   },
   "trustedDependencies": [
-    "@parcel/watcher"
+    "@parcel/watcher",
+    "@tsparticles/engine",
+    "esbuild",
+    "sharp",
+    "workerd"
   ],
   "devDependencies": {
     "prettier": "^3.4.2"
