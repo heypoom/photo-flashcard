@@ -42,6 +42,11 @@ onMounted(() => {
       if (data.type === "state") {
         currentWord.value = data.data.word
         playerCount.value = data.data.playerCount
+
+        // Request new word if none is present
+        if (!data.data.word) {
+          nextWord()
+        }
       } else if (data.type === "players") {
         playerCount.value = data.data
       }

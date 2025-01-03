@@ -61,6 +61,12 @@ export default class Server implements Party.Server {
         language: w.Language,
       }))
 
+      // Pick initial random word if none exists
+      if (!state.currentWord && state.words.length > 0) {
+        const randomIndex = Math.floor(Math.random() * state.words.length)
+        state.currentWord = state.words[randomIndex]
+      }
+
       await this.room.storage.put("state", state)
     }
 
