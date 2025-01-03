@@ -3,7 +3,7 @@ import type { Language } from "~/types/language"
 export function getPhotoToWordPrompt(languages: Language[]) {
   const languageNames: Record<Language, string> = {
     zh: "Simplified Chinese (zh)",
-    ja: "Hiragana/Katakana Japanese (ja)",
+    ja: "Hiragana or Katakana (ja)",
     en: "English (en)",
     vi: "Vietnamese (vi)",
   }
@@ -35,7 +35,7 @@ export function getPhotoToWordPrompt(languages: Language[]) {
   let notices = ""
 
   if (languages.includes("ja")) {
-    notices += `- Avoid Kanji. Use easy native Japanese words instead of loanwords when possible.
+    notices += `- Avoid Kanji. Use easy native Japanese words in hiragana and loanwords in katakana.
 - You must use romaji for Japanese pronunciations, such as akari or rōsoku.`
   }
 
