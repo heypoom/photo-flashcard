@@ -192,7 +192,7 @@ function nextWord() {
     <!-- Add leaderboard -->
     <div
       v-if="showLeaderboard"
-      class="fixed inset-0 bg-black/50 flex items-center justify-center z-20"
+      class="fixed inset-0 bg-black/50 flex items-center justify-center z-20 mx-4"
       @click.self="showLeaderboard = false"
     >
       <div class="bg-slate-800 rounded-xl p-6 w-full max-w-md">

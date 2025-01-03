@@ -51,7 +51,7 @@ const getCoordinate = (event: MouseEvent) => {
 </script>
 
 <template>
-  <div class="flex justify-center items-center">
+  <div class="flex justify-center items-center select-none">
     <vue-drawing-canvas
       ref="VueCanvasDrawing"
       v-model:image="drawingCanvasImage"
@@ -69,6 +69,7 @@ const getCoordinate = (event: MouseEvent) => {
       saveAs="png"
       :styles="{
         border: 'solid 1px #000',
+        'user-select': 'none',
       }"
       :lock="disabled"
       @mousemove="getCoordinate($event)"
