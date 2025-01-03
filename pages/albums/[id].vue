@@ -115,7 +115,10 @@ onMounted(() => {
       />
     </section>
 
-    <section class="flex flex-col fixed right-5 top-5 gap-y-4">
+    <section
+      class="flex flex-col fixed right-5 top-5 gap-y-4 z-auto"
+      v-if="!isCameraActive"
+    >
       <NuxtLink :to="`/challenge/${albumId}`">
         <Icon
           icon="solar:play-circle-line-duotone"
@@ -132,7 +135,7 @@ onMounted(() => {
     </section>
   </div>
 
-  <div class="fixed top-5 left-5">
+  <div class="fixed top-5 left-5" v-if="!isCameraActive">
     <NuxtLink to="/">
       <Icon
         icon="solar:arrow-left-linear"

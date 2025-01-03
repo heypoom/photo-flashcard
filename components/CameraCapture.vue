@@ -11,14 +11,11 @@ const { uploading, isCorrect } = defineProps<{
   isCorrect?: boolean | null
 }>()
 
-const isAndroid = navigator.userAgent.toLowerCase().includes("android")
-
 const videoRef = ref<HTMLVideoElement | null>(null)
 const canvasRef = ref<HTMLCanvasElement | null>(null)
 const stream = ref<MediaStream | null>(null)
-const isCameraActive = ref(false)
+
 const errorMessage = ref("")
-const useNativeFilePicker = ref(!isAndroid)
 
 const uploadIconClass = computed(() => {
   if (uploading) return "bg-yellow-500 animate-pulse"
@@ -163,24 +160,9 @@ onUnmounted(() => {
     <p>{{ errorMessage }}</p>
   </div>
 
-  <!-- Camera Preview -->
-  <div class="fixed top-0 left-0 z-0 bg-black">
-    <div class="rounded-lg overflow-hidden">
-      <video
-        ref="videoRef"
-        autoplay
-        playsinline
-        class="rounded-lg w-screen h-screen"
-        :class="{ hidden: !isCameraActive }"
-      ></video>
-    </div>
-  </div>
-
-  <canvas ref="canvasRef" class="hidden"></canvas>
-
   <div
     v-if="!useNativeFilePicker"
-    class="text-white p-2 rounded-full shadow-xl cursor-pointer z-10"
+    class="text-white p-2 rounded-full shadow-xl cursor-pointer z-30"
     :class="uploadIconClass"
     @click="capturePhoto"
   >
@@ -208,7 +190,7 @@ onUnmounted(() => {
   </div>
 
   <div
-    class="fixed left-5 bottom-24 flex flex-col gap-y-3"
+    class="flex absolute gap-x-3 z-50 pt-1 left-20"
     v-if="!useNativeFilePicker && isCameraActive"
   >
     <!-- Select File From Gallery -->
@@ -236,7 +218,22 @@ onUnmounted(() => {
       @click="stopCamera"
       class="size-[40px] bg-slate-500 hover:bg-slate-700 p-2 rounded-full shadow-xl"
     >
-      <Icon icon="solar:forbidden-circle-linear" class="text-2xl text-white" />
+      <Icon icon="mdi:multiply" class="text-2xl text-white" />
     </button>
   </div>
+
+  <!-- Camera Preview -->
+  <div class="fixed top-0 left-0 z-10 bg-black">
+    <div class="rounded-lg overflow-hidden">
+      <video
+        ref="videoRef"
+        autoplay
+        playsinline
+        class="rounded-lg w-screen h-screen"
+        :class="{ hidden: !isCameraActive }"
+      ></video>
+    </div>
+  </div>
+
+  <canvas ref="canvasRef" class="hidden"></canvas>
 </template>

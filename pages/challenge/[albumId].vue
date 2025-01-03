@@ -147,7 +147,7 @@ const languageNames: Record<Language, string> = {
       </div>
     </div>
 
-    <div class="fixed top-5 left-5">
+    <div class="fixed top-5 left-5" v-if="!isCameraActive">
       <NuxtLink :to="`/albums/${albumId}`">
         <Icon
           icon="solar:arrow-left-linear"
