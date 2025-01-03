@@ -162,14 +162,13 @@ onUnmounted(() => {
   </div>
 
   <!-- Camera Preview -->
-  <div class="fixed top-7 left-[50%] translate-x-[-50%]">
+  <div class="fixed top-0 left-0 z-0 bg-slate-800">
     <div class="rounded-lg overflow-hidden">
       <video
         ref="videoRef"
         autoplay
         playsinline
-        height="300px"
-        class="rounded-lg w-[50vw] h-[300px]"
+        class="rounded-lg w-screen h-screen"
         :class="{ hidden: !isCameraActive }"
         @click="stopCamera"
       ></video>
@@ -180,7 +179,7 @@ onUnmounted(() => {
 
   <div
     v-if="!useNativeFilePicker"
-    class="text-white p-2 rounded-full shadow-xl cursor-pointer"
+    class="text-white p-2 rounded-full shadow-xl cursor-pointer z-10"
     :class="uploadIconClass"
     @click="capturePhoto"
   >
